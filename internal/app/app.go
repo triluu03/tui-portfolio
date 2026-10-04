@@ -1,29 +1,36 @@
 package app
 
 import (
+	"fmt"
+
 	tea "charm.land/bubbletea/v2"
+	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/triluu03/tui-portfolio/internal/components"
 	"github.com/triluu03/tui-portfolio/internal/pages"
 )
 
-// Model is the root application model. It owns the list of pages and tracks
-// which page is currently active.
+// The layout is pinned to appWidth x appHeight and centered in the terminal.
+const (
+	appWidth  = 120
+	appHeight = 36
+)
+
+// The root application Bubble Tea's Model.
 type Model struct {
-	pages   []tea.Model
-	current int
+	pages      []tea.Model
+	current    int
+	termWidth  int
+	termHeight int
 }
 
-// New returns a root model with the pages wired up.
+// Return a new model with the pages wired up into the states.
 func New() Model {
-	return Model{
-		pages: []tea.Model{
-			pages.About{},
-			pages.Projects{},
-			pages.Experience{},
-			pages.Contact{},
-		},
+	var m Model
+	for _, d := range pages.Pages {
+		m.pages = append(m.pages, d.Model)
 	}
+	return m
 }
 
 // Init returns the initial commands from every page.
@@ -35,9 +42,14 @@ func (m Model) Init() tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
-// Update handles global key bindings and delegates messages to the active page.
+// Update handles global key bindings, terminal resizes, and delegates other
+// messages to the active page.
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.termWidth = msg.Width
+		m.termHeight = msg.Height
+		return m, nil
 	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "q", "ctrl+c":
@@ -53,13 +65,30 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-// View composes the header, active page, and footer into a single screen.
+// View renders the pinned appWidth x appHeight frame centered in the terminal.
+// When the terminal is smaller than the frame, it shows a hint instead.
 func (m Model) View() tea.View {
-	v := tea.NewView(
-		components.Header() + "\n" +
-			m.pages[m.current].View().Content + "\n" +
-			components.Footer(),
-	)
+	tabs := make([]string, len(pages.Pages))
+	for i, d := range pages.Pages {
+		tabs[i] = d.Title
+	}
+
+	active := pages.Pages[m.current]
+	frame := components.Header(appWidth, m.current, tabs) + "\n" +
+		m.pages[m.current].View().Content + "\n" +
+		components.Footer(appWidth, active.Path)
+	frame = lipgloss.NewStyle().
+		Width(appWidth).MaxWidth(appWidth).
+		Height(appHeight).MaxHeight(appHeight).
+		Render(frame)
+
+	if m.termWidth < appWidth || m.termHeight < appHeight {
+		frame = fmt.Sprintf("terminal too small: need %dx%d", appWidth, appHeight)
+	}
+
+	v := tea.NewView(lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, frame))
 	v.AltScreen = true
+	v.BackgroundColor = lipgloss.Color(components.ColorBackground)
+	v.ForegroundColor = lipgloss.Color(components.ColorForeground)
 	return v
 }
