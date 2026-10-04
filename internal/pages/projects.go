@@ -7,9 +7,6 @@ import (
 // Projects is the projects page.
 type Projects struct{}
 
-// NewProjects returns a new projects page.
-func NewProjects() Projects { return Projects{} }
-
 // Init is a no-op placeholder.
 func (p Projects) Init() tea.Cmd { return nil }
 

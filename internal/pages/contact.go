@@ -7,9 +7,6 @@ import (
 // Contact is the contact page.
 type Contact struct{}
 
-// NewContact returns a new contact page.
-func NewContact() Contact { return Contact{} }
-
 // Init is a no-op placeholder.
 func (c Contact) Init() tea.Cmd { return nil }
 

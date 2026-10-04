@@ -7,9 +7,6 @@ import (
 // About is the about page.
 type About struct{}
 
-// NewAbout returns a new about page.
-func NewAbout() About { return About{} }
-
 // Init is a no-op placeholder.
 func (a About) Init() tea.Cmd { return nil }
 

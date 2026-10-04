@@ -7,9 +7,6 @@ import (
 // Experience is the experience page.
 type Experience struct{}
 
-// NewExperience returns a new experience page.
-func NewExperience() Experience { return Experience{} }
-
 // Init is a no-op placeholder.
 func (e Experience) Init() tea.Cmd { return nil }
 

@@ -18,10 +18,10 @@ type Model struct {
 func New() Model {
 	return Model{
 		pages: []tea.Model{
-			pages.NewAbout(),
-			pages.NewProjects(),
-			pages.NewExperience(),
-			pages.NewContact(),
+			pages.About{},
+			pages.Projects{},
+			pages.Experience{},
+			pages.Contact{},
 		},
 	}
 }
