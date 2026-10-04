@@ -2,7 +2,6 @@ package components
 
 import (
 	"fmt"
-	"strings"
 
 	lipgloss "charm.land/lipgloss/v2"
 )
@@ -43,15 +42,15 @@ func Header(width int, active int, tabs []string) string {
 
 // fit renders s as a single line exactly width columns wide, truncating or
 // padding as needed. Widths <= 0 render as an empty string.
-func fit(s string, width int) string {
-	if width <= 0 {
-		return ""
-	}
-	if lipgloss.Width(s) > width {
-		s = lipgloss.NewStyle().MaxWidth(width).Render(s)
-	}
-	if pad := width - lipgloss.Width(s); pad > 0 {
-		s += strings.Repeat(" ", pad)
-	}
-	return s
-}
+// func fit(s string, width int) string {
+// 	if width <= 0 {
+// 		return ""
+// 	}
+// 	if lipgloss.Width(s) > width {
+// 		s = lipgloss.NewStyle().MaxWidth(width).Render(s)
+// 	}
+// 	if pad := width - lipgloss.Width(s); pad > 0 {
+// 		s += strings.Repeat(" ", pad)
+// 	}
+// 	return s
+// }
