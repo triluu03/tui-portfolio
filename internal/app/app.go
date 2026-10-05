@@ -10,12 +10,6 @@ import (
 	"github.com/triluu03/tui-portfolio/internal/pages"
 )
 
-// The layout is pinned to appWidth x appHeight and centered in the terminal.
-const (
-	appWidth  = 120
-	appHeight = 36
-)
-
 // The root application Bubble Tea's Model.
 type Model struct {
 	pages      []tea.Model
@@ -65,7 +59,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-// View renders the pinned appWidth x appHeight frame centered in the terminal.
+// View renders the pinned FrameWidth x FrameHeight frame centered in the terminal.
 // When the terminal is smaller than the frame, it shows a hint instead.
 func (m Model) View() tea.View {
 	tabs := make([]string, len(pages.Pages))
@@ -74,16 +68,18 @@ func (m Model) View() tea.View {
 	}
 
 	active := pages.Pages[m.current]
-	frame := components.Header(appWidth, m.current, tabs) + "\n" +
+	frame := components.Header(components.FrameWidth, m.current, tabs) + "\n" +
 		m.pages[m.current].View().Content + "\n" +
-		components.Footer(appWidth, active.Path)
+		components.Footer(components.FrameWidth, active.Path)
 	frame = lipgloss.NewStyle().
-		Width(appWidth).MaxWidth(appWidth).
-		Height(appHeight).MaxHeight(appHeight).
+		Width(components.FrameWidth).
+		MaxWidth(components.FrameWidth).
+		Height(components.FrameHeight).
+		MaxHeight(components.FrameHeight).
 		Render(frame)
 
-	if m.termWidth < appWidth || m.termHeight < appHeight {
-		frame = fmt.Sprintf("terminal too small: need %dx%d", appWidth, appHeight)
+	if m.termWidth < components.FrameWidth || m.termHeight < components.FrameHeight {
+		frame = fmt.Sprintf("terminal too small: need %dx%d", components.FrameWidth, components.FrameHeight)
 	}
 
 	v := tea.NewView(lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, frame))

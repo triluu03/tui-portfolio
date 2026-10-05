@@ -10,4 +10,8 @@ const (
 	ColorDim = "#727169"
 	// ColorAccent is the highlight color (crystalBlue).
 	ColorAccent = "#7E9CD8"
+	// ColorWarm is the warm highlight color (carpYellow).
+	ColorWarm = "#E6C384"
+	// ColorFaint is the panel border color (sumiInk5).
+	ColorFaint = "#363646"
 )

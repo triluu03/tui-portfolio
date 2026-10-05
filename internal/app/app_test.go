@@ -6,6 +6,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+
+	"github.com/triluu03/tui-portfolio/internal/components"
 )
 
 func TestViewSetsTerminalStyle(t *testing.T) {
@@ -37,9 +39,9 @@ func TestViewPinsAndCentersFrame(t *testing.T) {
 
 	// The appWidth x appHeight frame is centered, so it starts at column
 	// (160-appWidth)/2 and row (50-appHeight)/2.
-	left := strings.Repeat(" ", (160-appWidth)/2)
-	if !strings.HasPrefix(lines[(50-appHeight)/2], left) {
-		t.Errorf("frame is not horizontally centered on row %d", (50-appHeight)/2)
+	left := strings.Repeat(" ", (160-components.FrameWidth)/2)
+	if !strings.HasPrefix(lines[(50-components.FrameHeight)/2], left) {
+		t.Errorf("frame is not horizontally centered on row %d", (50-components.FrameHeight)/2)
 	}
 }
 
