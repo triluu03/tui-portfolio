@@ -27,15 +27,15 @@ func Panel(title string, width, height int, body string) string {
 		Foreground(lipgloss.Color(ColorFaint)).
 		Inline(true)
 	titleStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorDim)).
+		Foreground(lipgloss.Color(ColorWarm)).
 		Bold(true).
 		Inline(true)
 
 	title = ansi.Truncate(title, max(0, width-8), "")
 	dashes := max(0, width-8-lipgloss.Width(title))
-	top := faint.Render("┌ | ") +
-		titleStyle.Render(title) +
-		faint.Render(" | "+strings.Repeat("─", dashes)+"┐")
+	top := faint.Render("┌") +
+		titleStyle.Render(" { "+title+" } ") +
+		faint.Render(strings.Repeat("─", dashes)+"┐")
 
 	bodyLines := strings.Split(body, "\n")
 	bodyRows := height - 2
