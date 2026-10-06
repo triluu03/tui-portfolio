@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -38,8 +37,6 @@ const (
 	whoamiWidth = 77
 	// The outer width of the sysinfo panel.
 	sysInfoWidth = 37
-	// The width reserved for sysinfo row keys.
-	sysInfoKeyWidth = 10
 )
 
 // nameArtLines is nameArt split into its rows, computed once.
@@ -47,11 +44,12 @@ var nameArtLines = strings.Split(nameArt, "\n")
 
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
 var sysInfoRows = [][2]string{
-	{"", ""},
 	{"based", "Espoo, Finland"},
+	{"from", "Hanoi, Vietnam"},
 	{"timezone", "GMT+3"},
-	{"building", "something"},
-	{"reading", "some book"},
+	{"building", "a technical stuff"},
+	{"reading", "an intriguing book"},
+	{"watching", "a marvelous movie"},
 }
 
 // swatchColors are the palette colours shown at the bottom of the sysinfo panel.
@@ -95,8 +93,9 @@ func whoamiPanel(width, height int) string {
 // swatch row pinned to the bottom.
 func sysInfoPanel(width, height int, rows [][2]string) string {
 	body := make([]string, 0, height-2)
+	body = append(body, "")
 	for _, r := range rows {
-		body = append(body, dimStyle.Render(fmt.Sprintf("%-*s", sysInfoKeyWidth, r[0]))+r[1])
+		body = append(body, dimStyle.Render(r[0]), r[1], "")
 	}
 	if n := height - 3 - len(body); n > 0 {
 		body = append(body, make([]string, n)...)
