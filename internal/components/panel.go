@@ -8,40 +8,47 @@ import (
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
+// titleOpen and titleClose bracket the title on the top border. The width
+// available to the title is derived from them rather than hard-coded.
+const (
+	titleOpen  = " { "
+	titleClose = " } "
+)
+
+// Panel styles, declared once and treated as immutable. lipgloss styles are
+// value types, so sharing these is safe.
+var (
+	panelBorderStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorFaint)).Inline(true)
+	panelTitleStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm)).Bold(true).Inline(true)
+)
+
 // Panel draws a square box of the given outer size with title embedded in the
-// top border: ┌ | whoami | ─────────────┐. Every emitted line is exactly width
+// top border: ┌ { whoami } ─────────────┐. Every emitted line is exactly width
 // visible columns; over-wide titles and body lines are truncated to fit.
 func Panel(title string, width, height int, body string) string {
 	if width <= 0 || height <= 0 {
 		return ""
 	}
 
-	faint := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(style.ColorFaint)).
-		Inline(true)
-	titleStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(style.ColorWarm)).
-		Bold(true).
-		Inline(true)
+	titleMaxWidth := width - lipgloss.Width("┌"+titleOpen+titleClose+"┐")
+	text := ansi.Truncate(title, max(0, titleMaxWidth), "")
+	dashes := max(0, titleMaxWidth-lipgloss.Width(text))
+	innerWidth := width - lipgloss.Width("│  │")
 
-	title = ansi.Truncate(title, max(0, width-8), "")
-	dashes := max(0, width-8-lipgloss.Width(title))
-	top := faint.Render("┌") +
-		titleStyle.Render(" { "+title+" } ") +
-		faint.Render(strings.Repeat("─", dashes)+"┐")
+	top := panelBorderStyle.Render("┌") +
+		panelTitleStyle.Render(titleOpen+text+titleClose) +
+		panelBorderStyle.Render(strings.Repeat("─", dashes)+"┐")
 
-	bodyLines := strings.Split(body, "\n")
-	bodyRows := height - 2
+	lines := make([]string, max(0, height-2))
+	copy(lines, strings.Split(body, "\n"))
+
 	rows := make([]string, 0, height)
 	rows = append(rows, top)
-	for i := range bodyRows {
-		var line string
-		if i < len(bodyLines) {
-			line = bodyLines[i]
-		}
-		rows = append(rows, faint.Render("│ ")+padTo(line, width-4)+faint.Render(" │"))
+	left, right := panelBorderStyle.Render("│ "), panelBorderStyle.Render(" │")
+	for _, line := range lines {
+		rows = append(rows, left+padTo(line, innerWidth)+right)
 	}
-	rows = append(rows, faint.Render("└"+strings.Repeat("─", width-2)+"┘"))
+	rows = append(rows, panelBorderStyle.Render("└"+strings.Repeat("─", width-2)+"┘"))
 
 	return strings.Join(rows, "\n")
 }

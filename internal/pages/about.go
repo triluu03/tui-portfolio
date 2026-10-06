@@ -20,6 +20,9 @@ func (a About) Init() tea.Cmd { return nil }
 // Update is a no-op placeholder.
 func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return a, nil }
 
+// View renders the about page with the whoami and sysinfo panels.
+func (a About) View() tea.View { return tea.NewView(render()) }
+
 const (
 	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
 	tagline = "Just a normal tech guy."
@@ -39,6 +42,9 @@ const (
 	sysInfoKeyWidth = 10
 )
 
+// nameArtLines is nameArt split into its rows, computed once.
+var nameArtLines = strings.Split(nameArt, "\n")
+
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
 var sysInfoRows = [][2]string{
 	{"", ""},
@@ -57,29 +63,29 @@ var swatchColors = []string{
 	style.ColorFaint,
 }
 
-// View renders the about page with the whoami and sysinfo panels.
-func (a About) View() tea.View { return tea.NewView(a.render()) }
+// Panel styles, declared once and treated as immutable. lipgloss styles are
+// value types, so sharing these is safe.
+var (
+	accentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorAccent))
+	dimStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
+	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
+)
 
 // render builds the two-column about page padded to the pinned frame size.
-func (a About) render() string {
+func render() string {
 	whoami := whoamiPanel(whoamiWidth, style.ContentHeight)
 	sysinfo := sysInfoPanel(sysInfoWidth, style.ContentHeight, sysInfoRows)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
-	pad := strings.Repeat(" ", style.ContentPadX)
-	return pad + strings.ReplaceAll(row, "\n", pad+"\n"+pad) + pad
+	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 
 // whoamiPanel renders the whoami panel.
 func whoamiPanel(width, height int) string {
-	accent := lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorAccent))
-	dim := lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
-	warm := lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
+	promptLine := accentStyle.Render("$") + dimStyle.Render(" whoami")
+	roleLine := warmStyle.Render(role)
+	taglineLine := dimStyle.Render(tagline)
 
-	promptLine := accent.Render("$") + dim.Render(" whoami")
-	roleLine := warm.Render(role)
-	taglineLine := dim.Render(tagline)
-
-	body := append([]string{"", promptLine, ""}, strings.Split(nameArt, "\n")...)
+	body := append([]string{"", promptLine, ""}, nameArtLines...)
 	body = append(body, "", roleLine, taglineLine)
 
 	return components.Panel("whoami", width, height, strings.Join(body, "\n"))
@@ -88,14 +94,12 @@ func whoamiPanel(width, height int) string {
 // sysInfoPanel renders the sysinfo panel: key/value rows at the top and a palette
 // swatch row pinned to the bottom.
 func sysInfoPanel(width, height int, rows [][2]string) string {
-	key := lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
-
 	body := make([]string, 0, height-2)
 	for _, r := range rows {
-		body = append(body, key.Render(fmt.Sprintf("%-*s", sysInfoKeyWidth, r[0]))+r[1])
+		body = append(body, dimStyle.Render(fmt.Sprintf("%-*s", sysInfoKeyWidth, r[0]))+r[1])
 	}
-	for len(body) < height-3 {
-		body = append(body, "")
+	if n := height - 3 - len(body); n > 0 {
+		body = append(body, make([]string, n)...)
 	}
 	body = append(body, swatchRow(swatchColors))
 	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"))
