@@ -18,8 +18,13 @@ const (
 // Panel styles, declared once and treated as immutable. lipgloss styles are
 // value types, so sharing these is safe.
 var (
-	panelBorderStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorFaint)).Inline(true)
-	panelTitleStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm)).Bold(true).Inline(true)
+	panelBorderStyle = lipgloss.NewStyle().
+				Foreground(lipgloss.Color(style.ColorFaint)).
+				Inline(true)
+	panelTitleStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(style.ColorWarm)).
+			Bold(true).
+			Inline(true)
 )
 
 // Panel draws a square box of the given outer size with title embedded in the
