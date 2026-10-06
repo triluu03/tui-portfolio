@@ -21,9 +21,7 @@ func (a About) Init() tea.Cmd { return nil }
 func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return a, nil }
 
 const (
-	// role is the placeholder role line.
-	role = "Senior Data Scientist @ Sellfote Solutions Oy"
-	// tagline is the placeholder tagline.
+	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
 	tagline = "Just a normal tech guy."
 	// nameArt is the 5-row block rendering of the literal "[TRI LUU]".
 	// Every line is exactly 49 visible columns wide.
@@ -33,12 +31,12 @@ const (
 █     █   █  █    █         █     █   █ █   █   █
 █▄▄   █   █   █ █████       █████  ███   ███  ▄▄█`
 
-	// whoamiWidth is the outer width of the whoami panel.
+	// The outer width of the whoami section
 	whoamiWidth = 77
-	// sysInfoWidth is the outer width of the sysinfo panel.
+	// The outer width of the sysinfo panel.
 	sysInfoWidth = 37
-	// keyWidth is the width reserved for sysinfo row keys.
-	keyWidth = 10
+	// The width reserved for sysinfo row keys.
+	sysInfoKeyWidth = 10
 )
 
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
@@ -94,7 +92,7 @@ func sysInfoPanel(width, height int, rows [][2]string) string {
 
 	body := make([]string, 0, height-2)
 	for _, r := range rows {
-		body = append(body, key.Render(fmt.Sprintf("%-*s", keyWidth, r[0]))+r[1])
+		body = append(body, key.Render(fmt.Sprintf("%-*s", sysInfoKeyWidth, r[0]))+r[1])
 	}
 	for len(body) < height-3 {
 		body = append(body, "")
