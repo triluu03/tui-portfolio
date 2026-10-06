@@ -8,14 +8,6 @@ import (
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
-// The application frame is pinned to FrameWidth x FrameHeight. ContentHeight is
-// FrameHeight minus the header row and footer row.
-const (
-	FrameWidth    = 120
-	FrameHeight   = 36
-	ContentHeight = FrameHeight - 2
-)
-
 // Panel draws a square box of the given outer size with title embedded in the
 // top border: ┌ | whoami | ─────────────┐. Every emitted line is exactly width
 // visible columns; over-wide titles and body lines are truncated to fit.

@@ -64,8 +64,8 @@ func (a About) View() tea.View { return tea.NewView(a.render()) }
 
 // render builds the two-column about page padded to the pinned frame size.
 func (a About) render() string {
-	whoami := whoamiPanel(whoamiWidth, components.ContentHeight)
-	sysinfo := sysInfoPanel(sysInfoWidth, components.ContentHeight, sysInfoRows)
+	whoami := whoamiPanel(whoamiWidth, style.ContentHeight)
+	sysinfo := sysInfoPanel(sysInfoWidth, style.ContentHeight, sysInfoRows)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
 	pad := strings.Repeat(" ", style.ContentPadX)
 	return pad + strings.ReplaceAll(row, "\n", pad+"\n"+pad) + pad

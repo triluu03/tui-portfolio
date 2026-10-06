@@ -69,18 +69,18 @@ func (m Model) View() tea.View {
 	}
 
 	active := pages.Pages[m.current]
-	frame := components.Header(components.FrameWidth, m.current, tabs) + "\n" +
+	frame := components.Header(style.FrameWidth, m.current, tabs) + "\n" +
 		m.pages[m.current].View().Content + "\n" +
-		components.Footer(components.FrameWidth, active.Path)
+		components.Footer(style.FrameWidth, active.Path)
 	frame = lipgloss.NewStyle().
-		Width(components.FrameWidth).
-		MaxWidth(components.FrameWidth).
-		Height(components.FrameHeight).
-		MaxHeight(components.FrameHeight).
+		Width(style.FrameWidth).
+		MaxWidth(style.FrameWidth).
+		Height(style.FrameHeight).
+		MaxHeight(style.FrameHeight).
 		Render(frame)
 
-	if m.termWidth < components.FrameWidth || m.termHeight < components.FrameHeight {
-		frame = fmt.Sprintf("terminal too small: need %dx%d", components.FrameWidth, components.FrameHeight)
+	if m.termWidth < style.FrameWidth || m.termHeight < style.FrameHeight {
+		frame = fmt.Sprintf("terminal too small: need %dx%d", style.FrameWidth, style.FrameHeight)
 	}
 
 	v := tea.NewView(lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, frame))
