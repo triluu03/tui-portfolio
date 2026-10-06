@@ -1,4 +1,4 @@
-package components
+package style
 
 // Kanagawa palette (https://github.com/rebelot/kanagawa.nvim).
 const (

@@ -8,6 +8,7 @@ import (
 
 	"github.com/triluu03/tui-portfolio/internal/components"
 	"github.com/triluu03/tui-portfolio/internal/pages"
+	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
 // The root application Bubble Tea's Model.
@@ -84,7 +85,7 @@ func (m Model) View() tea.View {
 
 	v := tea.NewView(lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, frame))
 	v.AltScreen = true
-	v.BackgroundColor = lipgloss.Color(components.ColorBackground)
-	v.ForegroundColor = lipgloss.Color(components.ColorForeground)
+	v.BackgroundColor = lipgloss.Color(style.ColorBackground)
+	v.ForegroundColor = lipgloss.Color(style.ColorForeground)
 	return v
 }

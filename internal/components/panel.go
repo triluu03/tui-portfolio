@@ -5,6 +5,7 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
 // The application frame is pinned to FrameWidth x FrameHeight. ContentHeight is
@@ -24,10 +25,10 @@ func Panel(title string, width, height int, body string) string {
 	}
 
 	faint := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorFaint)).
+		Foreground(lipgloss.Color(style.ColorFaint)).
 		Inline(true)
 	titleStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorWarm)).
+		Foreground(lipgloss.Color(style.ColorWarm)).
 		Bold(true).
 		Inline(true)
 

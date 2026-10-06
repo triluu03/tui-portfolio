@@ -21,6 +21,24 @@ func TestAboutViewSize(t *testing.T) {
 	}
 }
 
+func TestAboutLayoutSum(t *testing.T) {
+	if got, want := 2*padX+whoamiWidth+columnGap+sysInfoWidth, components.FrameWidth; got != want {
+		t.Errorf("layout sum = %d, want %d", got, want)
+	}
+}
+
+func TestSysInfoPanelSize(t *testing.T) {
+	lines := strings.Split(sysInfoPanel(sysInfoWidth, components.ContentHeight, sysInfoRows), "\n")
+	if len(lines) != components.ContentHeight {
+		t.Errorf("sysinfo height = %d lines, want %d", len(lines), components.ContentHeight)
+	}
+	for i, line := range lines {
+		if w := lipgloss.Width(line); w != sysInfoWidth {
+			t.Errorf("sysinfo line %d width = %d, want %d (%q)", i, w, sysInfoWidth, line)
+		}
+	}
+}
+
 func TestNameArt(t *testing.T) {
 	lines := strings.Split(nameArt, "\n")
 	if len(lines) != 5 {

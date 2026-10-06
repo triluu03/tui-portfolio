@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
 func TestHeaderWidth(t *testing.T) {
@@ -32,10 +33,10 @@ func TestFooterWidth(t *testing.T) {
 
 func TestPalette(t *testing.T) {
 	colors := map[string]string{
-		"ColorBackground": ColorBackground,
-		"ColorForeground": ColorForeground,
-		"ColorDim":        ColorDim,
-		"ColorAccent":     ColorAccent,
+		"ColorBackground": style.ColorBackground,
+		"ColorForeground": style.ColorForeground,
+		"ColorDim":        style.ColorDim,
+		"ColorAccent":     style.ColorAccent,
 	}
 	seen := map[string]bool{}
 	for name, c := range colors {

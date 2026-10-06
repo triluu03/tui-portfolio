@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
 // Footer renders the bottom breadcrumb bar showing the active page's title and
@@ -15,13 +16,13 @@ func Footer(width int, title string) string {
 	}
 
 	footerTitle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorAccent)).
+		Foreground(lipgloss.Color(style.ColorAccent)).
 		Bold(true).
 		Inline(true).
 		Render(title)
 
 	hints := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(ColorDim)).
+		Foreground(lipgloss.Color(style.ColorDim)).
 		Inline(true).
 		Render("1-4 switch · ↑↓ move · enter open · q quit")
 

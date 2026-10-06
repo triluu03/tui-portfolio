@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
 // Header renders the top navigation bar with one tab per entry in tabs. The
@@ -19,11 +20,11 @@ func Header(width int, active int, tabs []string) string {
 		AlignVertical(lipgloss.Center).
 		Padding(0, 1)
 	activeStyle := tabBaseStyle.
-		Foreground(lipgloss.Color(ColorBackground)).
-		Background(lipgloss.Color(ColorAccent)).
+		Foreground(lipgloss.Color(style.ColorBackground)).
+		Background(lipgloss.Color(style.ColorAccent)).
 		Bold(true)
 	inactiveStyle := tabBaseStyle.
-		Foreground(lipgloss.Color(ColorDim))
+		Foreground(lipgloss.Color(style.ColorDim))
 
 	parts := make([]string, len(tabs))
 	for i, t := range tabs {
@@ -39,18 +40,3 @@ func Header(width int, active int, tabs []string) string {
 		Width(width).
 		Render(lipgloss.JoinHorizontal(lipgloss.Center, parts...))
 }
-
-// fit renders s as a single line exactly width columns wide, truncating or
-// padding as needed. Widths <= 0 render as an empty string.
-// func fit(s string, width int) string {
-// 	if width <= 0 {
-// 		return ""
-// 	}
-// 	if lipgloss.Width(s) > width {
-// 		s = lipgloss.NewStyle().MaxWidth(width).Render(s)
-// 	}
-// 	if pad := width - lipgloss.Width(s); pad > 0 {
-// 		s += strings.Repeat(" ", pad)
-// 	}
-// 	return s
-// }
