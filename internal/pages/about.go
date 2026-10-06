@@ -33,16 +33,12 @@ const (
 █     █   █  █    █         █     █   █ █   █   █
 █▄▄   █   █   █ █████       █████  ███   ███  ▄▄█`
 
-	// padX is the horizontal padding on each side of the content area.
-	padX = 2
 	// whoamiWidth is the outer width of the whoami panel.
 	whoamiWidth = 77
-	// columnGap is the horizontal gap between the two panels.
-	columnGap = 2
 	// sysInfoWidth is the outer width of the sysinfo panel.
 	sysInfoWidth = 37
 	// keyWidth is the width reserved for sysinfo row keys.
-	keyWidth = 9
+	keyWidth = 10
 )
 
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
@@ -50,8 +46,8 @@ var sysInfoRows = [][2]string{
 	{"", ""},
 	{"based", "Espoo, Finland"},
 	{"timezone", "GMT+3"},
-	{"building", "tui-portfolio"},
-	{"reading", "The Trial - Kafka"},
+	{"building", "something"},
+	{"reading", "some book"},
 }
 
 // swatchColors are the palette colours shown at the bottom of the sysinfo panel.
@@ -70,8 +66,8 @@ func (a About) View() tea.View { return tea.NewView(a.render()) }
 func (a About) render() string {
 	whoami := whoamiPanel(whoamiWidth, components.ContentHeight)
 	sysinfo := sysInfoPanel(sysInfoWidth, components.ContentHeight, sysInfoRows)
-	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", columnGap), sysinfo)
-	pad := strings.Repeat(" ", padX)
+	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
+	pad := strings.Repeat(" ", style.ContentPadX)
 	return pad + strings.ReplaceAll(row, "\n", pad+"\n"+pad) + pad
 }
 
