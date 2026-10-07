@@ -19,6 +19,14 @@ const (
 	FooterHeight = 1 // Not in use at the moment
 )
 
+// About spacing
+const (
+	// The outer width of the whoami section
+	AboutWhoAmIWidth = 77
+	// The outer width of the sysinfo panel.
+	AboutSysInfoWidth = 37
+)
+
 // Projects spacing
 // 37 + ColumnGap(2) + 77 = 116 = FrameWidth - 2*ContentPadX.
 const (

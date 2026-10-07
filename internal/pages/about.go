@@ -32,11 +32,6 @@ const (
 █     █   ████    █         █     █   █ █   █   █
 █     █   █  █    █         █     █   █ █   █   █
 █▄▄   █   █   █ █████       █████  ███   ███  ▄▄█`
-
-	// The outer width of the whoami section
-	whoamiWidth = 77
-	// The outer width of the sysinfo panel.
-	sysInfoWidth = 37
 )
 
 // nameArtLines is nameArt split into its rows, computed once.
@@ -71,8 +66,8 @@ var (
 
 // render builds the two-column about page padded to the pinned frame size.
 func render() string {
-	whoami := whoamiPanel(whoamiWidth, style.ContentHeight)
-	sysinfo := sysInfoPanel(sysInfoWidth, style.ContentHeight, sysInfoRows)
+	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight)
+	sysinfo := sysInfoPanel(style.AboutSysInfoWidth, style.ContentHeight, sysInfoRows)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
