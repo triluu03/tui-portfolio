@@ -9,6 +9,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
+	figure "github.com/common-nighthawk/go-figure"
+
 	"github.com/triluu03/tui-portfolio/internal/components"
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
@@ -37,8 +39,8 @@ var projects = []Project{
 		Source:      "https://github.com/triluu03/tui-portfolio",
 	},
 	{
-		Name:        "churn-model",
-		Title:       "Churn Prediction Model",
+		Name:        "pennysheet",
+		Title:       "Pennysheet",
 		Year:        "2024",
 		Description: "XGBoost classifier scoring monthly churn risk for subscriptions.",
 		Highlights:  []string{"AUC 0.91 on held-out cohort", "SHAP explanations per account"},
@@ -125,15 +127,19 @@ func detailBody(p Project) string {
 	for i, s := range p.Stack {
 		tags[i] = accentStyle.Render("[" + s + "]")
 	}
-	lines := []string{
+	lines := []string{""}
+	for _, row := range figure.NewFigure(p.Name, "rectangles", true).Slicify() {
+		lines = append(lines, warmStyle.Render(row))
+	}
+	lines = append(lines,
 		"",
-		warmStyle.Render(p.Title),
+		dimStyle.Render(p.Title),
 		strings.Join(tags, " "),
 		"",
 		p.Description,
 		"",
 		warmStyle.Render("## Highlights"),
-	}
+	)
 	for _, h := range p.Highlights {
 		lines = append(lines, accentStyle.Render("- ")+h)
 	}
