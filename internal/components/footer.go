@@ -32,5 +32,4 @@ func Footer(width int, title string) string {
 	}
 
 	return footerTitle + strings.Repeat(" ", gaps) + hints
-
 }
