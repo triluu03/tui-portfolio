@@ -16,8 +16,6 @@ func Header(width int, active int, tabs []string) string {
 	}
 
 	tabBaseStyle := lipgloss.NewStyle().
-		Height(1).
-		AlignVertical(lipgloss.Center).
 		Padding(0, 1)
 	activeStyle := tabBaseStyle.
 		Foreground(lipgloss.Color(style.ColorBackground)).
@@ -38,5 +36,7 @@ func Header(width int, active int, tabs []string) string {
 
 	return lipgloss.NewStyle().
 		Width(width).
+		Height(style.HeaderHeight).
+		AlignVertical(lipgloss.Center).
 		Render(lipgloss.JoinHorizontal(lipgloss.Center, parts...))
 }
