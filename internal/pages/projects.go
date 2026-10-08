@@ -33,37 +33,27 @@ var projects = []Project{
 		Name:        "tui-portfolio",
 		Title:       "TUI Portfolio",
 		Year:        "Oct 2026",
-		Description: "A terminal portfolio rendered in a pinned 120x36 frame.",
-		Highlights:  []string{"Shared palette and spacing tokens", "Multi-page navigation with q/1-4 keys"},
+		Description: "A terminal portfolio built in Go.",
+		Highlights:  []string{"Host a secured SSH server locally."},
 		Stack:       []string{"Go", "Bubble Tea", "Lip Gloss"},
 		Source:      "https://github.com/triluu03/tui-portfolio",
 	},
 	{
 		Name:        "pennysheet",
 		Title:       "Pennysheet",
-		Year:        "2024",
-		Description: "XGBoost classifier scoring monthly churn risk for subscriptions.",
-		Highlights:  []string{"AUC 0.91 on held-out cohort", "SHAP explanations per account"},
-		Stack:       []string{"Python", "scikit-learn", "XGBoost"},
-		Source:      "https://github.com/triluu03/churn-model",
+		Year:        "June 2026",
+		Description: "A personal finance tracking app based on event-sourcing.",
+		Highlights:  []string{"Built a robust event-sourcing architecture.", "Integrated to Claude/Codex with a MCP server.", "Implemented real-time expenses tracking."},
+		Stack:       []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
+		Source:      "https://github.com/triluu03/pennysheet",
 	},
 	{
-		Name:        "etl-pipeline",
-		Title:       "Warehouse ETL Pipeline",
-		Year:        "2023",
-		Description: "Airflow DAGs and dbt models loading nightly product telemetry.",
-		Highlights:  []string{"Backfilled three years of history", "Downstream dashboards refresh on time"},
-		Stack:       []string{"Airflow", "dbt", "PostgreSQL"},
-		Source:      "https://github.com/triluu03/etl-pipeline",
-	},
-	{
-		Name:        "viz-dashboard",
-		Title:       "Metrics Dashboard",
-		Year:        "2022",
-		Description: "Dashboards generated from warehouse queries and served as flat files.",
-		Highlights:  []string{"Renders in under a second per page", "No backend needed after build"},
-		Stack:       []string{"SQL", "Go", "HTML"},
-		Source:      "https://github.com/triluu03/viz-dashboard",
+		Name:        "sf-cli",
+		Title:       "Sellforte Command Line Interface (sf-cli)",
+		Year:        "June 2026",
+		Description: "An internal productivity tool for Sellforte data scientists.",
+		Highlights:  []string{"Automatically set up computer environments for data science work.", "Connect and run SQL queries to PostgreSQL databases."},
+		Stack:       []string{"Rust", "Tokio", "PostgreSQL"},
 	},
 }
 
@@ -144,7 +134,10 @@ func detailBody(p Project) string {
 		lines = append(lines, accentStyle.Render("- ")+h)
 	}
 	var links []string
-	links = append(links, accentStyle.Render("→ source: ")+dimStyle.Render(p.Source))
+
+	if p.Source != "" {
+		links = append(links, accentStyle.Render("→ source: ")+dimStyle.Render(p.Source))
+	}
 
 	lines = append(lines, "")
 	lines = append(lines, links...)
