@@ -33,7 +33,7 @@ var experienceRecords = []ExperienceRecord{
 	{
 		CompanyNameArt:  "Sellforte",
 		CompanyName:     "Sellforte Solutions Oy",
-		Position:        "Senior Data Scientist & Developer",
+		Position:        "Senior Data Scientist",
 		Location:        "Espoo, Finland",
 		StartTime:       "Jul 2026",
 		EndTime:         "Now",
@@ -60,7 +60,7 @@ var experienceRecords = []ExperienceRecord{
 		Position:        "Junior Data Scientist",
 		Location:        "Espoo, Finland",
 		StartTime:       "Jun 2024",
-		EndTime:         "Aug 2026",
+		EndTime:         "Aug 2024",
 		Description:     "Joined as an intern for the summer.",
 		Highlights:      []string{"Developed data integration and modeling pipelines\nfor company's weather analytics solution used by 7+ customers.", "Onboarded 2 customers to the company's analytics solutions\nand ensured weekly results delivery."},
 		Skills:          []string{"Python", "Pandas", "Matplotlib"},
