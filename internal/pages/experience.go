@@ -20,10 +20,10 @@ type ExperienceRecord struct {
 	Location        string
 	StartTime       string
 	EndTime         string
-	Description     string   // one or two short sentences
-	Highlights      []string // bullet points in the detail panel
-	Skills          []string // bracketed skills tags in the detail panel
-	RelatedProjects []string // related projects URLs
+	Description     string
+	Highlights      []string
+	Skills          []string
+	RelatedProjects []string
 }
 
 // experienceRecords is the seed data. Adding an entry is a single slice
@@ -69,7 +69,7 @@ var experienceRecords = []ExperienceRecord{
 	{
 		CompanyNameArt:  "Uni of Hel",
 		CompanyName:     "University of Helsinki",
-		Position:        "Master in Data Science",
+		Position:        "Master of Science",
 		Location:        "Helsinki, Finland",
 		StartTime:       "Aug 2024",
 		EndTime:         "Jun 2026",
@@ -81,7 +81,7 @@ var experienceRecords = []ExperienceRecord{
 	{
 		CompanyNameArt:  "Uni of Hel",
 		CompanyName:     "University of Helsinki",
-		Position:        "Bachelor in Science",
+		Position:        "Bachelor of Science",
 		Location:        "Helsinki, Finland",
 		StartTime:       "Aug 2021",
 		EndTime:         "Jun 2024",
