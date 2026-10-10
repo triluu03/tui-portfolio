@@ -17,13 +17,14 @@ import (
 
 // Project is a single entry in the projects list.
 type Project struct {
-	Name        string   // list label
-	Title       string   // detail heading
-	Year        string   // shown right-aligned in the list
-	Description string   // one or two short sentences
-	Highlights  []string // bullet points in the detail panel
-	Stack       []string // bracketed tags in the detail panel
-	Source      string   // source URL
+	Name        string
+	Title       string
+	StartTime   string
+	EndTime     string
+	Description string
+	Highlights  []string
+	Stack       []string
+	Source      string
 }
 
 // projects is the seed data. Adding an entry is a single slice literal; the
@@ -32,7 +33,8 @@ var projects = []Project{
 	{
 		Name:        "tui-portfolio",
 		Title:       "TUI Portfolio",
-		Year:        "Oct 2026",
+		StartTime:   "Oct 2026",
+		EndTime:     "Now",
 		Description: "A terminal portfolio built in Go.",
 		Highlights:  []string{"Host a secured SSH server locally."},
 		Stack:       []string{"Go", "Bubble Tea", "Lip Gloss"},
@@ -41,7 +43,8 @@ var projects = []Project{
 	{
 		Name:        "pennysheet",
 		Title:       "Pennysheet",
-		Year:        "June 2026",
+		StartTime:   "Jun 2026",
+		EndTime:     "Aug 2026",
 		Description: "A personal finance tracking app based on event-sourcing.",
 		Highlights:  []string{"Built a robust event-sourcing architecture.", "Integrated to Claude/Codex with a MCP server.", "Implemented real-time expenses tracking."},
 		Stack:       []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
@@ -50,7 +53,8 @@ var projects = []Project{
 	{
 		Name:        "sf-cli",
 		Title:       "Sellforte Command Line Interface (sf-cli)",
-		Year:        "June 2026",
+		StartTime:   "Jun 2026",
+		EndTime:     "Now",
 		Description: "An internal productivity tool for Sellforte data scientists.",
 		Highlights:  []string{"Automatically set up computer environments for data science work.", "Connect and run SQL queries to PostgreSQL databases."},
 		Stack:       []string{"Rust", "Tokio", "PostgreSQL"},
@@ -96,17 +100,20 @@ func (p Projects) renderProjects() string {
 
 // projectListBody renders the projects list, marking the selected row.
 func projectListBody(selected int) string {
-	innerWidth := style.ProjectListWidth - lipgloss.Width("│  │")
-	rows := make([]string, nProjects+1) // rows[0] is the blank spacer
+	rows := []string{""}
 	for i, p := range projects {
-		marker, nameStyle := "  ", dimStyle
+		marker, lineStyle := "  ", dimStyle
 		if i == selected {
-			marker, nameStyle = "> ", accentStyle
+			marker, lineStyle = "> ", accentStyle
 		}
-		name := nameStyle.Render(marker + p.Name)
-		year := dimStyle.Render(p.Year)
-		gap := max(0, innerWidth-lipgloss.Width(name)-lipgloss.Width(year))
-		rows[i+1] = name + strings.Repeat(" ", gap) + year
+		rows = append(rows,
+			lineStyle.Render(marker+p.Name),
+			lineStyle.Render("  "+p.StartTime+" - "+p.EndTime),
+		)
+		if i < nProjects-1 {
+			rows = append(rows, "")
+		}
+
 	}
 	return strings.Join(rows, "\n")
 }
