@@ -6,14 +6,13 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
-
 	figure "github.com/common-nighthawk/go-figure"
 
 	"github.com/triluu03/tui-portfolio/internal/components"
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
-// Project is a single entry in the projects list.
+// ExperienceRecord is a single entry in the experience list.
 type ExperienceRecord struct {
 	CompanyNameArt  string
 	CompanyName     string
@@ -27,40 +26,68 @@ type ExperienceRecord struct {
 	RelatedProjects []string // related projects URLs
 }
 
-// projects is the seed data. Adding an entry is a single slice literal; the
-// list panel title count is derived from len(projects), never hard-coded.
+// experienceRecords is the seed data. Adding an entry is a single slice
+// literal; the list panel title count is derived from
+// len(experienceRecords), never hard-coded.
 var experienceRecords = []ExperienceRecord{
 	{
 		CompanyNameArt:  "Sellforte",
 		CompanyName:     "Sellforte Solutions Oy",
-		Position:        "Senior Data Scientist",
-		StartTime:       "Oct 2025",
+		Position:        "Senior Data Scientist & Developer",
+		Location:        "Espoo, Finland",
+		StartTime:       "Jul 2026",
 		EndTime:         "Now",
-		Description:     "Placeholder description",
-		Highlights:      []string{"Placeholder 1", "Placeholder 2"},
-		Skills:          []string{"Polars", "JavaScript"},
+		Description:     "Main developer of three high-stake customer-facing modules.",
+		Highlights:      []string{"Performance Recommendations", "Media Optimizer", "MTA"},
+		Skills:          []string{"Python", "Polars", "TypeScript", "VueJS"},
 		RelatedProjects: []string{},
 	},
 	{
 		CompanyNameArt:  "Sellforte",
 		CompanyName:     "Sellforte Solutions Oy",
 		Position:        "Data Scientist",
-		StartTime:       "Oct 2024",
-		EndTime:         "Oct 2025",
-		Description:     "Placeholder description",
-		Highlights:      []string{"Placeholder 1", "Placeholder 2"},
-		Skills:          []string{"Polars", "JavaScript"},
+		Location:        "Espoo, Finland",
+		StartTime:       "Aug 2024",
+		EndTime:         "Jul 2026",
+		Description:     "Main developer of the Media Optimizer module.",
+		Highlights:      []string{"", ""},
+		Skills:          []string{"Python", "Polars", "JavaScript", "VueJS"},
+		RelatedProjects: []string{},
+	},
+	{
+		CompanyNameArt:  "Sellforte",
+		CompanyName:     "Sellforte Solutions Oy",
+		Position:        "Junior Data Scientist",
+		Location:        "Espoo, Finland",
+		StartTime:       "Jun 2024",
+		EndTime:         "Aug 2026",
+		Description:     "Joined as an intern for the summer.",
+		Highlights:      []string{"Developed data integration and modeling pipelines\nfor company's weather analytics solution used by 7+ customers.", "Onboarded 2 customers to the company's analytics solutions\nand ensured weekly results delivery."},
+		Skills:          []string{"Python", "Pandas", "Matplotlib"},
 		RelatedProjects: []string{},
 	},
 	{
 		CompanyNameArt:  "Uni of Hel",
 		CompanyName:     "University of Helsinki",
-		Position:        "Master's Program in Data Science",
-		StartTime:       "Oct 2022",
-		EndTime:         "Oct 2024",
-		Description:     "Placeholder description",
-		Highlights:      []string{"Placeholder 1", "Placeholder 2"},
-		Skills:          []string{"Polars", "JavaScript"},
+		Position:        "Master in Data Science",
+		Location:        "Helsinki, Finland",
+		StartTime:       "Aug 2024",
+		EndTime:         "Jun 2026",
+		Description:     "Focused on Machine Learning and Bayesian analytics.",
+		Highlights:      []string{"GPA: 4.77/5.0", "Thesis: Bayesian Experimental Design in Marketing Mix Modeling"},
+		Skills:          []string{"Placeholder 1"},
+		RelatedProjects: []string{"https://helda.helsinki.fi/items/48e5ae2f-8bf0-4c87-b3a2-6f47b34d91bf"},
+	},
+	{
+		CompanyNameArt:  "Uni of Hel",
+		CompanyName:     "University of Helsinki",
+		Position:        "Bachelor in Science",
+		Location:        "Helsinki, Finland",
+		StartTime:       "Aug 2021",
+		EndTime:         "Jun 2024",
+		Description:     "Major: Computer Science and Data Science.",
+		Highlights:      []string{"GPA: 4.93/5.0", "Thesis: Application of Deep Learning in Drug Response Prediction"},
+		Skills:          []string{"Placeholder 1"},
 		RelatedProjects: []string{},
 	},
 }
@@ -73,66 +100,87 @@ type Experience struct{ selected int }
 // Init is a no-op placeholder.
 func (e Experience) Init() tea.Cmd { return nil }
 
-// Update is a no-op placeholder.
-func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return e, nil }
+// Update handles list navigation and ignores all other messages.
+func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if key, ok := msg.(tea.KeyPressMsg); ok {
+		switch key.String() {
+		case "up", "k":
+			e.selected = (e.selected + nExperienceRecords - 1) % nExperienceRecords
+		case "down", "j":
+			e.selected = (e.selected + 1) % nExperienceRecords
+		}
+	}
+	return e, nil
+}
 
-// View renders the experience page placeholder.
-func (e Experience) View() tea.View { return tea.NewView("Experience") }
+// View renders the experience list and detail panels.
+func (e Experience) View() tea.View { return tea.NewView(e.renderExperience()) }
 
-// renderProjects builds the two-column projects page padded to the pinned frame size.
-func (p Experience) renderExperience() string {
-	selectedProject := projects[p.selected]
+// renderExperience builds the two-column experience page padded to the pinned frame size.
+func (e Experience) renderExperience() string {
+	selectedRecord := experienceRecords[e.selected]
 
-	projectList := components.Panel(fmt.Sprintf("projects (%d)", nProjects), style.ProjectListWidth, style.ContentHeight, experienceListBody(p.selected))
-	projectDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, experienceDetailBody(selectedProject))
+	experienceList := components.Panel(fmt.Sprintf("experience (%d)", nExperienceRecords), style.ProjectListWidth, style.ContentHeight, experienceListBody(e.selected))
+	experienceDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, experienceDetailBody(selectedRecord))
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, projectList, strings.Repeat(" ", style.ColumnGap), projectDetail)
+	body := lipgloss.JoinHorizontal(lipgloss.Top, experienceList, strings.Repeat(" ", style.ColumnGap), experienceDetail)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
-// experienceListBody renders the projects list, marking the selected row.
+// experienceListBody renders the experience list, marking the selected record.
 func experienceListBody(selected int) string {
-	innerWidth := style.ProjectListWidth - lipgloss.Width("│  │")
-	rows := make([]string, nProjects+1) // rows[0] is the blank spacer
-	for i, p := range projects {
-		marker, nameStyle := "  ", dimStyle
+	rows := []string{""} // leading blank spacer
+	for i, r := range experienceRecords {
+		marker, lineStyle := "  ", dimStyle
 		if i == selected {
-			marker, nameStyle = "> ", accentStyle
+			marker, lineStyle = "> ", accentStyle
 		}
-		name := nameStyle.Render(marker + p.Name)
-		year := dimStyle.Render(p.Year)
-		gap := max(0, innerWidth-lipgloss.Width(name)-lipgloss.Width(year))
-		rows[i+1] = name + strings.Repeat(" ", gap) + year
+		rows = append(rows,
+			lineStyle.Render(marker+r.CompanyName),
+			lineStyle.Render("  "+r.Position),
+			lineStyle.Render("  "+r.StartTime+" - "+r.EndTime),
+		)
+		if i < nExperienceRecords-1 {
+			rows = append(rows, "")
+		}
 	}
 	return strings.Join(rows, "\n")
 }
 
-// experienceDetailBody renders the README-style detail panel for one project.
-func experienceDetailBody(p Project) string {
-	tags := make([]string, len(p.Stack))
-	for i, s := range p.Stack {
+// experienceDetailBody renders the README-style detail panel for one record.
+func experienceDetailBody(r ExperienceRecord) string {
+	tags := make([]string, len(r.Skills))
+	for i, s := range r.Skills {
 		tags[i] = accentStyle.Render("[" + s + "]")
 	}
 	lines := []string{""}
-	for _, row := range figure.NewFigure(p.Name, "rectangles", true).Slicify() {
+	for _, row := range figure.NewFigure(r.CompanyNameArt, "rectangles", true).Slicify() {
 		lines = append(lines, warmStyle.Render(row))
 	}
 	lines = append(lines,
 		"",
-		dimStyle.Render(p.Title),
+		dimStyle.Render(r.CompanyName),
+		dimStyle.Render(r.Position),
+		dimStyle.Render(r.Location),
+		"",
 		strings.Join(tags, " "),
 		"",
-		p.Description,
+		r.Description,
 		"",
 		warmStyle.Render("## Highlights"),
 	)
-	for _, h := range p.Highlights {
-		lines = append(lines, accentStyle.Render("- ")+h)
+	for _, h := range r.Highlights {
+		for i, part := range strings.Split(h, "\n") {
+			if i == 0 {
+				lines = append(lines, accentStyle.Render("- ")+part)
+			} else {
+				lines = append(lines, "  "+part)
+			}
+		}
 	}
-	var links []string
-	links = append(links, accentStyle.Render("→ source: ")+dimStyle.Render(p.Source))
-
 	lines = append(lines, "")
-	lines = append(lines, links...)
+	for _, url := range r.RelatedProjects {
+		lines = append(lines, accentStyle.Render("→ related: ")+dimStyle.Render(url))
+	}
 	return strings.Join(lines, "\n")
 }
