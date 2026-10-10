@@ -87,15 +87,15 @@ func (p Projects) View() tea.View { return tea.NewView(p.renderProjects()) }
 func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
-	projectList := components.Panel(fmt.Sprintf("projects (%d)", nProjects), style.ProjectListWidth, style.ContentHeight, listBody(p.selected))
-	projectDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, detailBody(selectedProject))
+	projectList := components.Panel(fmt.Sprintf("projects (%d)", nProjects), style.ProjectListWidth, style.ContentHeight, projectListBody(p.selected))
+	projectDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, projectDetailBody(selectedProject))
 
 	body := lipgloss.JoinHorizontal(lipgloss.Top, projectList, strings.Repeat(" ", style.ColumnGap), projectDetail)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
-// listBody renders the projects list, marking the selected row.
-func listBody(selected int) string {
+// projectListBody renders the projects list, marking the selected row.
+func projectListBody(selected int) string {
 	innerWidth := style.ProjectListWidth - lipgloss.Width("│  │")
 	rows := make([]string, nProjects+1) // rows[0] is the blank spacer
 	for i, p := range projects {
@@ -111,8 +111,8 @@ func listBody(selected int) string {
 	return strings.Join(rows, "\n")
 }
 
-// detailBody renders the README-style detail panel for one project.
-func detailBody(p Project) string {
+// projectDetailBody renders the README-style detail panel for one project.
+func projectDetailBody(p Project) string {
 	tags := make([]string, len(p.Stack))
 	for i, s := range p.Stack {
 		tags[i] = accentStyle.Render("[" + s + "]")
