@@ -20,7 +20,7 @@ func (a About) Init() tea.Cmd { return nil }
 func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return a, nil }
 
 // View renders the about page with the whoami and sysinfo panels.
-func (a About) View() tea.View { return tea.NewView(render()) }
+func (a About) View() tea.View { return tea.NewView(renderAbout()) }
 
 const (
 	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
@@ -64,11 +64,17 @@ var (
 	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
 )
 
-// render builds the two-column about page padded to the pinned frame size.
-func render() string {
+// renderAbout builds the two-column about page padded to the pinned frame size.
+func renderAbout() string {
 	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight)
 	sysinfo := sysInfoPanel(style.AboutSysInfoWidth, style.ContentHeight, sysInfoRows)
-	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
+
+	row := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		whoami,
+		strings.Repeat(" ", style.ColumnGap),
+		sysinfo,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 

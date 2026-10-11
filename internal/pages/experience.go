@@ -116,20 +116,8 @@ func (e Experience) View() tea.View { return tea.NewView(e.renderExperience()) }
 func (e Experience) renderExperience() string {
 	selectedRecord := experienceRecords[e.selected]
 
-	experienceList := components.Panel(
-		fmt.Sprintf("experience (%d)", nExperienceRecords),
-		style.ProjectListWidth,
-		style.ContentHeight,
-		experienceListBody(e.selected),
-		true,
-	)
-	experienceDetail := components.Panel(
-		"README.md",
-		style.ProjectDetailWidth,
-		style.ContentHeight,
-		experienceDetailBody(selectedRecord),
-		false,
-	)
+	experienceList := experienceListPanel(e.selected)
+	experienceDetail := experienceDetailPanel(selectedRecord)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -140,8 +128,8 @@ func (e Experience) renderExperience() string {
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
-// experienceListBody renders the experience list, marking the selected record.
-func experienceListBody(selected int) string {
+// experienceListPanel renders the experience list, marking the selected record.
+func experienceListPanel(selected int) string {
 	rows := []string{""} // leading blank spacer
 	for i, r := range experienceRecords {
 		marker, lineStyle := "  ", dimStyle
@@ -157,11 +145,18 @@ func experienceListBody(selected int) string {
 			rows = append(rows, "")
 		}
 	}
-	return strings.Join(rows, "\n")
+
+	return components.Panel(
+		fmt.Sprintf("experience (%d)", nExperienceRecords),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		strings.Join(rows, "\n"),
+		true,
+	)
 }
 
-// experienceDetailBody renders the README-style detail panel for one record.
-func experienceDetailBody(r ExperienceRecord) string {
+// experienceDetailPanel renders the README-style detail panel for one record.
+func experienceDetailPanel(r ExperienceRecord) string {
 	tags := make([]string, len(r.Skills))
 	for i, s := range r.Skills {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -195,5 +190,12 @@ func experienceDetailBody(r ExperienceRecord) string {
 	if r.RelatedLink != "" {
 		lines = append(lines, accentStyle.Render("→ related: ")+dimStyle.Render(r.RelatedLink))
 	}
-	return strings.Join(lines, "\n")
+
+	return components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		strings.Join(lines, "\n"),
+		false,
+	)
 }

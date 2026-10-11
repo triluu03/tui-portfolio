@@ -91,20 +91,8 @@ func (p Projects) View() tea.View { return tea.NewView(p.renderProjects()) }
 func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
-	projectList := components.Panel(
-		fmt.Sprintf("projects (%d)", nProjects),
-		style.ProjectListWidth,
-		style.ContentHeight,
-		projectListBody(p.selected),
-		true,
-	)
-	projectDetail := components.Panel(
-		"README.md",
-		style.ProjectDetailWidth,
-		style.ContentHeight,
-		projectDetailBody(selectedProject),
-		false,
-	)
+	projectList := projectListBody(p.selected)
+	projectDetail := projectDetailBody(selectedProject)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -132,7 +120,14 @@ func projectListBody(selected int) string {
 		}
 
 	}
-	return strings.Join(rows, "\n")
+
+	return components.Panel(
+		fmt.Sprintf("projects (%d)", nProjects),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		strings.Join(rows, "\n"),
+		true,
+	)
 }
 
 // projectDetailBody renders the README-style detail panel for one project.
@@ -165,7 +160,14 @@ func projectDetailBody(p Project) string {
 
 	lines = append(lines, "")
 	lines = append(lines, links...)
-	return strings.Join(lines, "\n")
+
+	return components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		strings.Join(lines, "\n"),
+		false,
+	)
 }
 
 // openURL launches url in the user's default browser without blocking the UI.
