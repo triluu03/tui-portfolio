@@ -91,10 +91,25 @@ func (p Projects) View() tea.View { return tea.NewView(p.renderProjects()) }
 func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
-	projectList := components.Panel(fmt.Sprintf("projects (%d)", nProjects), style.ProjectListWidth, style.ContentHeight, projectListBody(p.selected))
-	projectDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, projectDetailBody(selectedProject))
+	projectList := components.Panel(
+		fmt.Sprintf("projects (%d)", nProjects),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		projectListBody(p.selected),
+	)
+	projectDetail := components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		projectDetailBody(selectedProject),
+	)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, projectList, strings.Repeat(" ", style.ColumnGap), projectDetail)
+	body := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		projectList,
+		strings.Repeat(" ", style.ColumnGap),
+		projectDetail,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 

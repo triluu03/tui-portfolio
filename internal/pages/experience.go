@@ -116,10 +116,25 @@ func (e Experience) View() tea.View { return tea.NewView(e.renderExperience()) }
 func (e Experience) renderExperience() string {
 	selectedRecord := experienceRecords[e.selected]
 
-	experienceList := components.Panel(fmt.Sprintf("experience (%d)", nExperienceRecords), style.ProjectListWidth, style.ContentHeight, experienceListBody(e.selected))
-	experienceDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, experienceDetailBody(selectedRecord))
+	experienceList := components.Panel(
+		fmt.Sprintf("experience (%d)", nExperienceRecords),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		experienceListBody(e.selected),
+	)
+	experienceDetail := components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		experienceDetailBody(selectedRecord),
+	)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, experienceList, strings.Repeat(" ", style.ColumnGap), experienceDetail)
+	body := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		experienceList,
+		strings.Repeat(" ", style.ColumnGap),
+		experienceDetail,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
