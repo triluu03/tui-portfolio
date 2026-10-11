@@ -33,3 +33,11 @@ const (
 	ProjectListWidth   = 37
 	ProjectDetailWidth = 77
 )
+
+// Contact spacing
+// 77 + ColumnGap(2) + 37 + 2*ContentPadX(4) = 120 = FrameWidth.
+// Row width = 77 + 2 + 37 = 116 = FrameWidth - 2*ContentPadX.
+const (
+	ContactComposeWidth = 77
+	ContactLinksWidth   = 37
+)
