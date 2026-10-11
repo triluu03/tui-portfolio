@@ -22,7 +22,7 @@ var (
 				Foreground(lipgloss.Color(style.ColorFaint)).
 				Inline(true)
 	panelSelectedBorderStyle = lipgloss.NewStyle().
-					Foreground(lipgloss.Color(style.ColorWarm)).
+					Foreground(lipgloss.Color(style.ColorBoatYellow1)).
 					Inline(true)
 	panelTitleStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(style.ColorWarm)).
