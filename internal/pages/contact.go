@@ -60,7 +60,7 @@ func contactComposePanel(width, height int) string {
 
 	body := []string{"", promptLine, ""}
 	for _, f := range [][2]string{
-		{"name:", "[YOUR NAME]"},
+		{"name:", "Your Name"},
 		{"email:", "you@example.com"},
 		{"message:", "Hi! I'd like to talk about..."},
 	} {
