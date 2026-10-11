@@ -96,12 +96,14 @@ func (p Projects) renderProjects() string {
 		style.ProjectListWidth,
 		style.ContentHeight,
 		projectListBody(p.selected),
+		true,
 	)
 	projectDetail := components.Panel(
 		"README.md",
 		style.ProjectDetailWidth,
 		style.ContentHeight,
 		projectDetailBody(selectedProject),
+		false,
 	)
 
 	body := lipgloss.JoinHorizontal(

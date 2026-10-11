@@ -81,7 +81,7 @@ func whoamiPanel(width, height int) string {
 	body := append([]string{"", promptLine, ""}, nameArtLines...)
 	body = append(body, "", roleLine, taglineLine)
 
-	return components.Panel("whoami", width, height, strings.Join(body, "\n"))
+	return components.Panel("whoami", width, height, strings.Join(body, "\n"), true)
 }
 
 // sysInfoPanel renders the sysinfo panel: key/value rows at the top and a palette
@@ -96,7 +96,7 @@ func sysInfoPanel(width, height int, rows [][2]string) string {
 		body = append(body, make([]string, n)...)
 	}
 	body = append(body, swatchRow(swatchColors))
-	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"))
+	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"), false)
 }
 
 // swatchRow renders each colour as a two-cell block joined by a space.

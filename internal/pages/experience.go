@@ -121,12 +121,14 @@ func (e Experience) renderExperience() string {
 		style.ProjectListWidth,
 		style.ContentHeight,
 		experienceListBody(e.selected),
+		true,
 	)
 	experienceDetail := components.Panel(
 		"README.md",
 		style.ProjectDetailWidth,
 		style.ContentHeight,
 		experienceDetailBody(selectedRecord),
+		false,
 	)
 
 	body := lipgloss.JoinHorizontal(

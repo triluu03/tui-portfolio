@@ -68,7 +68,13 @@ func contactComposePanel(width, height int) string {
 	}
 	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter to send"))
 
-	return components.Panel("mail --compose", width, height, strings.Join(body, "\n"))
+	return components.Panel(
+		"mail --compose",
+		width,
+		height,
+		strings.Join(body, "\n"),
+		true,
+	)
 }
 
 // contactLinksPanel renders the links panel with the signature pinned to the
@@ -93,7 +99,7 @@ func contactLinksPanel(width, height int) string {
 	}
 	body = append(body, signature...)
 
-	return components.Panel("links", width, height, strings.Join(body, "\n"))
+	return components.Panel("links", width, height, strings.Join(body, "\n"), false)
 }
 
 // placeholderBox renders a single-line bordered box sized to width visible
