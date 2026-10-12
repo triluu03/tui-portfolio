@@ -91,7 +91,10 @@ var experienceRecords = []ExperienceRecord{
 var nExperienceRecords = len(experienceRecords)
 
 // Experience is the experience page.
-type Experience struct{ selected int }
+type Experience struct {
+	selected int
+	focus    *bool
+}
 
 // Init is a no-op placeholder.
 func (e Experience) Init() tea.Cmd { return nil }
@@ -116,8 +119,8 @@ func (e Experience) View() tea.View { return tea.NewView(e.renderExperience()) }
 func (e Experience) renderExperience() string {
 	selectedRecord := experienceRecords[e.selected]
 
-	experienceList := experienceListPanel(e.selected)
-	experienceDetail := experienceDetailPanel(selectedRecord)
+	experienceList := experienceListPanel(e.selected, !*e.focus)
+	experienceDetail := experienceDetailPanel(selectedRecord, *e.focus)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -129,7 +132,7 @@ func (e Experience) renderExperience() string {
 }
 
 // experienceListPanel renders the experience list, marking the selected record.
-func experienceListPanel(selected int) string {
+func experienceListPanel(selected int, focused bool) string {
 	rows := []string{""} // leading blank spacer
 	for i, r := range experienceRecords {
 		marker, lineStyle := "  ", dimStyle
@@ -151,12 +154,12 @@ func experienceListPanel(selected int) string {
 		style.ProjectListWidth,
 		style.ContentHeight,
 		strings.Join(rows, "\n"),
-		true,
+		focused,
 	)
 }
 
 // experienceDetailPanel renders the README-style detail panel for one record.
-func experienceDetailPanel(r ExperienceRecord) string {
+func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 	tags := make([]string, len(r.Skills))
 	for i, s := range r.Skills {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -196,6 +199,6 @@ func experienceDetailPanel(r ExperienceRecord) string {
 		style.ProjectDetailWidth,
 		style.ContentHeight,
 		strings.Join(lines, "\n"),
-		false,
+		focused,
 	)
 }

@@ -11,7 +11,7 @@ import (
 )
 
 // About is the about page.
-type About struct{}
+type About struct{ focus *bool }
 
 // Init is a no-op placeholder.
 func (a About) Init() tea.Cmd { return nil }
@@ -20,7 +20,7 @@ func (a About) Init() tea.Cmd { return nil }
 func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return a, nil }
 
 // View renders the about page with the whoami and sysinfo panels.
-func (a About) View() tea.View { return tea.NewView(renderAbout()) }
+func (a About) View() tea.View { return tea.NewView(renderAbout(*a.focus)) }
 
 const (
 	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
@@ -65,9 +65,9 @@ var (
 )
 
 // renderAbout builds the two-column about page padded to the pinned frame size.
-func renderAbout() string {
-	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight)
-	sysinfo := sysInfoPanel(style.AboutSysInfoWidth, style.ContentHeight, sysInfoRows)
+func renderAbout(focusRight bool) string {
+	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight, !focusRight)
+	sysinfo := sysInfoPanel(style.AboutSysInfoWidth, style.ContentHeight, sysInfoRows, focusRight)
 
 	row := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -79,7 +79,7 @@ func renderAbout() string {
 }
 
 // whoamiPanel renders the whoami panel.
-func whoamiPanel(width, height int) string {
+func whoamiPanel(width, height int, focused bool) string {
 	promptLine := accentStyle.Render("$") + dimStyle.Render(" whoami")
 	roleLine := warmStyle.Render(role)
 	taglineLine := dimStyle.Render(tagline)
@@ -87,12 +87,12 @@ func whoamiPanel(width, height int) string {
 	body := append([]string{"", promptLine, ""}, nameArtLines...)
 	body = append(body, "", roleLine, taglineLine)
 
-	return components.Panel("whoami", width, height, strings.Join(body, "\n"), true)
+	return components.Panel("whoami", width, height, strings.Join(body, "\n"), focused)
 }
 
 // sysInfoPanel renders the sysinfo panel: key/value rows at the top and a palette
 // swatch row pinned to the bottom.
-func sysInfoPanel(width, height int, rows [][2]string) string {
+func sysInfoPanel(width, height int, rows [][2]string, focused bool) string {
 	body := make([]string, 0, height-2)
 	body = append(body, "")
 	for _, r := range rows {
@@ -102,7 +102,7 @@ func sysInfoPanel(width, height int, rows [][2]string) string {
 		body = append(body, make([]string, n)...)
 	}
 	body = append(body, swatchRow(swatchColors))
-	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"), false)
+	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"), focused)
 }
 
 // swatchRow renders each colour as a two-cell block joined by a space.

@@ -11,7 +11,7 @@ import (
 )
 
 // Contact is the contact page.
-type Contact struct{}
+type Contact struct{ focus *bool }
 
 // Init is a no-op placeholder.
 func (c Contact) Init() tea.Cmd { return nil }
@@ -20,7 +20,7 @@ func (c Contact) Init() tea.Cmd { return nil }
 func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return c, nil }
 
 // View renders the contact page.
-func (c Contact) View() tea.View { return tea.NewView(renderContact()) }
+func (c Contact) View() tea.View { return tea.NewView(renderContact(*c.focus)) }
 
 const (
 	recipientEmail = "ductriluu.work@gmail.com"
@@ -46,15 +46,15 @@ var contactLinks = []contactLink{
 }
 
 // renderContact builds the two-column contact page padded to the pinned frame size.
-func renderContact() string {
-	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight)
-	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight)
+func renderContact(focusRight bool) string {
+	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, !focusRight)
+	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, focusRight)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, compose, strings.Repeat(" ", style.ColumnGap), links)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 
 // contactComposePanel renders the mail compose panel.
-func contactComposePanel(width, height int) string {
+func contactComposePanel(width, height int, focused bool) string {
 	innerWidth := width - lipgloss.Width("│  │")
 	promptLine := accentStyle.Render("$ mail " + recipientEmail)
 
@@ -73,13 +73,13 @@ func contactComposePanel(width, height int) string {
 		width,
 		height,
 		strings.Join(body, "\n"),
-		true,
+		focused,
 	)
 }
 
 // contactLinksPanel renders the links panel with the signature pinned to the
 // bottom: filler lines = panel inner height - links - signature lines.
-func contactLinksPanel(width, height int) string {
+func contactLinksPanel(width, height int, focused bool) string {
 	body := make([]string, 0, height-2)
 	body = append(body, "")
 	for _, l := range contactLinks {
@@ -99,7 +99,7 @@ func contactLinksPanel(width, height int) string {
 	}
 	body = append(body, signature...)
 
-	return components.Panel("links", width, height, strings.Join(body, "\n"), false)
+	return components.Panel("links", width, height, strings.Join(body, "\n"), focused)
 }
 
 // placeholderBox renders a single-line bordered box sized to width visible

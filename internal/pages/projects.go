@@ -2,6 +2,7 @@ package pages
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -64,7 +65,10 @@ var projects = []Project{
 var nProjects = len(projects)
 
 // Projects is the projects page.
-type Projects struct{ selected int }
+type Projects struct {
+	selected int
+	focus    *bool
+}
 
 // Init is a no-op placeholder.
 func (p Projects) Init() tea.Cmd { return nil }
@@ -91,8 +95,8 @@ func (p Projects) View() tea.View { return tea.NewView(p.renderProjects()) }
 func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
-	projectList := projectListBody(p.selected)
-	projectDetail := projectDetailBody(selectedProject)
+	projectList := projectListBody(p.selected, !*p.focus)
+	projectDetail := projectDetailBody(selectedProject, *p.focus)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -104,7 +108,7 @@ func (p Projects) renderProjects() string {
 }
 
 // projectListBody renders the projects list, marking the selected row.
-func projectListBody(selected int) string {
+func projectListBody(selected int, focused bool) string {
 	rows := []string{""}
 	for i, p := range projects {
 		marker, lineStyle := "  ", dimStyle
@@ -126,12 +130,12 @@ func projectListBody(selected int) string {
 		style.ProjectListWidth,
 		style.ContentHeight,
 		strings.Join(rows, "\n"),
-		true,
+		focused,
 	)
 }
 
 // projectDetailBody renders the README-style detail panel for one project.
-func projectDetailBody(p Project) string {
+func projectDetailBody(p Project, focused bool) string {
 	tags := make([]string, len(p.Stack))
 	for i, s := range p.Stack {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -166,7 +170,7 @@ func projectDetailBody(p Project) string {
 		style.ProjectDetailWidth,
 		style.ContentHeight,
 		strings.Join(lines, "\n"),
-		false,
+		focused,
 	)
 }
 
@@ -185,7 +189,9 @@ func openURL(url string) tea.Cmd {
 		default:
 			cmd = exec.Command("xdg-open", url)
 		}
-		_ = cmd.Start()
+		if err := cmd.Start(); err != nil {
+			log.Printf("openURL %s: %v", url, err)
+		}
 		return nil
 	}
 }

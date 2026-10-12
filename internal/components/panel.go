@@ -33,13 +33,13 @@ var (
 // Panel draws a square box of the given outer size with title embedded in the
 // top border: ┌ { whoami } ─────────────┐. Every emitted line is exactly width
 // visible columns; over-wide titles and body lines are truncated to fit.
-func Panel(title string, width, height int, body string, selected bool) string {
+func Panel(title string, width, height int, body string, focused bool) string {
 	if width <= 0 || height <= 0 {
 		return ""
 	}
 
 	borderStyle := panelBorderStyle
-	if selected {
+	if focused {
 		borderStyle = panelSelectedBorderStyle
 	}
 
