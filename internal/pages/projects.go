@@ -2,9 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"log"
-	"os/exec"
-	"runtime"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -75,14 +72,12 @@ func (p Projects) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (p.focus == nil || !*p.focus) {
 		switch key.String() {
 		case "up", "k":
 			p.selected = (p.selected + nProjects - 1) % nProjects
 		case "down", "j":
 			p.selected = (p.selected + 1) % nProjects
-		case "enter":
-			return p, openURL(projects[p.selected].Source)
 		}
 	}
 	return p, nil
@@ -172,26 +167,4 @@ func projectDetailBody(p Project, focused bool) string {
 		strings.Join(lines, "\n"),
 		focused,
 	)
-}
-
-// openURL launches url in the user's default browser without blocking the UI.
-func openURL(url string) tea.Cmd {
-	if url == "" {
-		return nil
-	}
-	return func() tea.Msg {
-		var cmd *exec.Cmd
-		switch runtime.GOOS {
-		case "darwin":
-			cmd = exec.Command("open", url)
-		case "windows":
-			cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-		default:
-			cmd = exec.Command("xdg-open", url)
-		}
-		if err := cmd.Start(); err != nil {
-			log.Printf("openURL %s: %v", url, err)
-		}
-		return nil
-	}
 }

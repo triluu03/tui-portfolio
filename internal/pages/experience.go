@@ -101,7 +101,7 @@ func (e Experience) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (e.focus == nil || !*e.focus) {
 		switch key.String() {
 		case "up", "k":
 			e.selected = (e.selected + nExperienceRecords - 1) % nExperienceRecords

@@ -1,6 +1,10 @@
 package pages
 
 import (
+	"log"
+	"os/exec"
+	"runtime"
+
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -18,4 +22,26 @@ var Pages = []Descriptor{
 	{Title: "Projects", Path: "~/portfolio/projects", New: func(focus *bool) tea.Model { return Projects{focus: focus} }},
 	{Title: "Experience", Path: "~/portfolio/experience", New: func(focus *bool) tea.Model { return Experience{focus: focus} }},
 	{Title: "Contact", Path: "~/portfolio/contact", New: func(focus *bool) tea.Model { return Contact{focus: focus} }},
+}
+
+// openURL launches url in the user's default browser without blocking the UI.
+func openURL(url string) tea.Cmd {
+	if url == "" {
+		return nil
+	}
+	return func() tea.Msg {
+		var cmd *exec.Cmd
+		switch runtime.GOOS {
+		case "darwin":
+			cmd = exec.Command("open", url)
+		case "windows":
+			cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+		default:
+			cmd = exec.Command("xdg-open", url)
+		}
+		if err := cmd.Start(); err != nil {
+			log.Printf("openURL %s: %v", url, err)
+		}
+		return nil
+	}
 }

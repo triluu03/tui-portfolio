@@ -10,18 +10,6 @@ import (
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
-// Contact is the contact page.
-type Contact struct{ focus *bool }
-
-// Init is a no-op placeholder.
-func (c Contact) Init() tea.Cmd { return nil }
-
-// Update is a no-op placeholder.
-func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return c, nil }
-
-// View renders the contact page.
-func (c Contact) View() tea.View { return tea.NewView(renderContact(*c.focus)) }
-
 const (
 	recipientEmail = "ductriluu.work@gmail.com"
 	signatureName  = "Tri Luu"
@@ -45,10 +33,40 @@ var contactLinks = []contactLink{
 	{label: "cv", value: "cv.pdf", url: "cv.pdf"},
 }
 
+var nContactLinks = len(contactLinks)
+
+// Contact is the contact page.
+type Contact struct {
+	selectedContactLink int
+	focus               *bool
+}
+
+// Init is a no-op placeholder.
+func (c Contact) Init() tea.Cmd { return nil }
+
+// Update is a no-op placeholder.
+func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (*c.focus) {
+		switch key.String() {
+		case "up", "k":
+			c.selectedContactLink = (c.selectedContactLink + nContactLinks - 1) % nContactLinks
+		case "down", "j":
+			c.selectedContactLink = (c.selectedContactLink + 1) % nContactLinks
+		case "enter":
+			return c, openURL(contactLinks[c.selectedContactLink].url)
+		}
+	}
+
+	return c, nil
+}
+
+// View renders the contact page.
+func (c Contact) View() tea.View { return tea.NewView(c.renderContact()) }
+
 // renderContact builds the two-column contact page padded to the pinned frame size.
-func renderContact(focusRight bool) string {
-	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, !focusRight)
-	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, focusRight)
+func (c Contact) renderContact() string {
+	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, !*c.focus)
+	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, c.selectedContactLink, *c.focus)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, compose, strings.Repeat(" ", style.ColumnGap), links)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
@@ -79,15 +97,23 @@ func contactComposePanel(width, height int, focused bool) string {
 
 // contactLinksPanel renders the links panel with the signature pinned to the
 // bottom: filler lines = panel inner height - links - signature lines.
-func contactLinksPanel(width, height int, focused bool) string {
+func contactLinksPanel(width, height int, selected int, focused bool) string {
 	body := make([]string, 0, height-2)
 	body = append(body, "")
-	for _, l := range contactLinks {
-		body = append(body,
-			accentStyle.Render(l.label),
-			dimStyle.Render(l.value+" ↗"),
-			"",
-		)
+	for i, l := range contactLinks {
+		if i == selected {
+			body = append(body,
+				dimStyle.Render(l.label),
+				accentStyle.Render(l.value+" ↗"),
+				"",
+			)
+		} else {
+			body = append(body,
+				dimStyle.Render(l.label),
+				l.value,
+				"",
+			)
+		}
 	}
 
 	signature := []string{

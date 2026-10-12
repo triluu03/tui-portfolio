@@ -52,14 +52,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
-		case "left", "h":
+		case "left", "h", "esc":
 			*m.focusRight = false
 			return m, nil
-		case "right", "l":
+		case "right", "l", "enter":
 			*m.focusRight = true
 			return m, nil
 		case "1", "2", "3", "4":
 			m.current = int(msg.String()[0] - '1')
+			*m.focusRight = false
 			return m, nil
 		}
 	}
