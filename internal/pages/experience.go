@@ -91,14 +91,17 @@ var experienceRecords = []ExperienceRecord{
 var nExperienceRecords = len(experienceRecords)
 
 // Experience is the experience page.
-type Experience struct{ selected int }
+type Experience struct {
+	selected int
+	focus    *bool
+}
 
 // Init is a no-op placeholder.
 func (e Experience) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (e.focus == nil || !*e.focus) {
 		switch key.String() {
 		case "up", "k":
 			e.selected = (e.selected + nExperienceRecords - 1) % nExperienceRecords
@@ -116,15 +119,20 @@ func (e Experience) View() tea.View { return tea.NewView(e.renderExperience()) }
 func (e Experience) renderExperience() string {
 	selectedRecord := experienceRecords[e.selected]
 
-	experienceList := components.Panel(fmt.Sprintf("experience (%d)", nExperienceRecords), style.ProjectListWidth, style.ContentHeight, experienceListBody(e.selected))
-	experienceDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, experienceDetailBody(selectedRecord))
+	experienceList := experienceListPanel(e.selected, !*e.focus)
+	experienceDetail := experienceDetailPanel(selectedRecord, *e.focus)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, experienceList, strings.Repeat(" ", style.ColumnGap), experienceDetail)
+	body := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		experienceList,
+		strings.Repeat(" ", style.ColumnGap),
+		experienceDetail,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
-// experienceListBody renders the experience list, marking the selected record.
-func experienceListBody(selected int) string {
+// experienceListPanel renders the experience list, marking the selected record.
+func experienceListPanel(selected int, focused bool) string {
 	rows := []string{""} // leading blank spacer
 	for i, r := range experienceRecords {
 		marker, lineStyle := "  ", dimStyle
@@ -140,11 +148,18 @@ func experienceListBody(selected int) string {
 			rows = append(rows, "")
 		}
 	}
-	return strings.Join(rows, "\n")
+
+	return components.Panel(
+		fmt.Sprintf("experience (%d)", nExperienceRecords),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		strings.Join(rows, "\n"),
+		focused,
+	)
 }
 
-// experienceDetailBody renders the README-style detail panel for one record.
-func experienceDetailBody(r ExperienceRecord) string {
+// experienceDetailPanel renders the README-style detail panel for one record.
+func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 	tags := make([]string, len(r.Skills))
 	for i, s := range r.Skills {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -178,5 +193,12 @@ func experienceDetailBody(r ExperienceRecord) string {
 	if r.RelatedLink != "" {
 		lines = append(lines, accentStyle.Render("→ related: ")+dimStyle.Render(r.RelatedLink))
 	}
-	return strings.Join(lines, "\n")
+
+	return components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		strings.Join(lines, "\n"),
+		focused,
+	)
 }

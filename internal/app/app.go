@@ -17,13 +17,16 @@ type Model struct {
 	current    int
 	termWidth  int
 	termHeight int
+	focusRight *bool
 }
 
 // Return a new model with the pages wired up into the states.
 func New() Model {
+	focus := new(bool)
 	var m Model
+	m.focusRight = focus
 	for _, d := range pages.Pages {
-		m.pages = append(m.pages, d.Model)
+		m.pages = append(m.pages, d.New(focus))
 	}
 	return m
 }
@@ -49,8 +52,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
+		case "left", "h", "esc":
+			*m.focusRight = false
+			return m, nil
+		case "right", "l", "enter":
+			*m.focusRight = true
+			return m, nil
 		case "1", "2", "3", "4":
 			m.current = int(msg.String()[0] - '1')
+			*m.focusRight = false
 			return m, nil
 		}
 	}

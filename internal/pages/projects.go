@@ -2,8 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"os/exec"
-	"runtime"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -64,21 +62,22 @@ var projects = []Project{
 var nProjects = len(projects)
 
 // Projects is the projects page.
-type Projects struct{ selected int }
+type Projects struct {
+	selected int
+	focus    *bool
+}
 
 // Init is a no-op placeholder.
 func (p Projects) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (p.focus == nil || !*p.focus) {
 		switch key.String() {
 		case "up", "k":
 			p.selected = (p.selected + nProjects - 1) % nProjects
 		case "down", "j":
 			p.selected = (p.selected + 1) % nProjects
-		case "enter":
-			return p, openURL(projects[p.selected].Source)
 		}
 	}
 	return p, nil
@@ -91,15 +90,20 @@ func (p Projects) View() tea.View { return tea.NewView(p.renderProjects()) }
 func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
-	projectList := components.Panel(fmt.Sprintf("projects (%d)", nProjects), style.ProjectListWidth, style.ContentHeight, projectListBody(p.selected))
-	projectDetail := components.Panel("README.md", style.ProjectDetailWidth, style.ContentHeight, projectDetailBody(selectedProject))
+	projectList := projectListBody(p.selected, !*p.focus)
+	projectDetail := projectDetailBody(selectedProject, *p.focus)
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, projectList, strings.Repeat(" ", style.ColumnGap), projectDetail)
+	body := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		projectList,
+		strings.Repeat(" ", style.ColumnGap),
+		projectDetail,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(body)
 }
 
 // projectListBody renders the projects list, marking the selected row.
-func projectListBody(selected int) string {
+func projectListBody(selected int, focused bool) string {
 	rows := []string{""}
 	for i, p := range projects {
 		marker, lineStyle := "  ", dimStyle
@@ -115,11 +119,18 @@ func projectListBody(selected int) string {
 		}
 
 	}
-	return strings.Join(rows, "\n")
+
+	return components.Panel(
+		fmt.Sprintf("projects (%d)", nProjects),
+		style.ProjectListWidth,
+		style.ContentHeight,
+		strings.Join(rows, "\n"),
+		focused,
+	)
 }
 
 // projectDetailBody renders the README-style detail panel for one project.
-func projectDetailBody(p Project) string {
+func projectDetailBody(p Project, focused bool) string {
 	tags := make([]string, len(p.Stack))
 	for i, s := range p.Stack {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -148,25 +159,12 @@ func projectDetailBody(p Project) string {
 
 	lines = append(lines, "")
 	lines = append(lines, links...)
-	return strings.Join(lines, "\n")
-}
 
-// openURL launches url in the user's default browser without blocking the UI.
-func openURL(url string) tea.Cmd {
-	if url == "" {
-		return nil
-	}
-	return func() tea.Msg {
-		var cmd *exec.Cmd
-		switch runtime.GOOS {
-		case "darwin":
-			cmd = exec.Command("open", url)
-		case "windows":
-			cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-		default:
-			cmd = exec.Command("xdg-open", url)
-		}
-		_ = cmd.Start()
-		return nil
-	}
+	return components.Panel(
+		"README.md",
+		style.ProjectDetailWidth,
+		style.ContentHeight,
+		strings.Join(lines, "\n"),
+		focused,
+	)
 }

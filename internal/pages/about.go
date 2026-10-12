@@ -10,18 +10,6 @@ import (
 	"github.com/triluu03/tui-portfolio/internal/style"
 )
 
-// About is the about page.
-type About struct{}
-
-// Init is a no-op placeholder.
-func (a About) Init() tea.Cmd { return nil }
-
-// Update is a no-op placeholder.
-func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) { return a, nil }
-
-// View renders the about page with the whoami and sysinfo panels.
-func (a About) View() tea.View { return tea.NewView(render()) }
-
 const (
 	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
 	tagline = "Just a normal tech guy."
@@ -47,6 +35,8 @@ var sysInfoRows = [][2]string{
 	{"watching", "a marvelous movie"},
 }
 
+var nSysInfoRows = len(sysInfoRows)
+
 // swatchColors are the palette colours shown at the bottom of the sysinfo panel.
 var swatchColors = []string{
 	style.ColorWarm,
@@ -64,16 +54,53 @@ var (
 	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
 )
 
-// render builds the two-column about page padded to the pinned frame size.
-func render() string {
-	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight)
-	sysinfo := sysInfoPanel(style.AboutSysInfoWidth, style.ContentHeight, sysInfoRows)
-	row := lipgloss.JoinHorizontal(lipgloss.Top, whoami, strings.Repeat(" ", style.ColumnGap), sysinfo)
+// About is the about page.
+type About struct {
+	selectedSysInfo int
+	focus           *bool
+}
+
+// Init is a no-op placeholder.
+func (a About) Init() tea.Cmd { return nil }
+
+// Update is a no-op placeholder.
+func (a About) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if key, ok := msg.(tea.KeyPressMsg); ok && (*a.focus) {
+		switch key.String() {
+		case "up", "k":
+			a.selectedSysInfo = (a.selectedSysInfo + nSysInfoRows - 1) % nSysInfoRows
+		case "down", "j":
+			a.selectedSysInfo = (a.selectedSysInfo + 1) % nSysInfoRows
+		}
+	}
+	return a, nil
+}
+
+// View renders the about page with the whoami and sysinfo panels.
+func (a About) View() tea.View { return tea.NewView(a.renderAbout()) }
+
+// renderAbout builds the two-column about page padded to the pinned frame size.
+func (a About) renderAbout() string {
+	whoami := whoamiPanel(style.AboutWhoAmIWidth, style.ContentHeight, !*a.focus)
+	sysinfo := sysInfoPanel(
+		style.AboutSysInfoWidth,
+		style.ContentHeight,
+		sysInfoRows,
+		a.selectedSysInfo,
+		*a.focus,
+	)
+
+	row := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		whoami,
+		strings.Repeat(" ", style.ColumnGap),
+		sysinfo,
+	)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 
 // whoamiPanel renders the whoami panel.
-func whoamiPanel(width, height int) string {
+func whoamiPanel(width, height int, focused bool) string {
 	promptLine := accentStyle.Render("$") + dimStyle.Render(" whoami")
 	roleLine := warmStyle.Render(role)
 	taglineLine := dimStyle.Render(tagline)
@@ -81,22 +108,26 @@ func whoamiPanel(width, height int) string {
 	body := append([]string{"", promptLine, ""}, nameArtLines...)
 	body = append(body, "", roleLine, taglineLine)
 
-	return components.Panel("whoami", width, height, strings.Join(body, "\n"))
+	return components.Panel("whoami", width, height, strings.Join(body, "\n"), focused)
 }
 
 // sysInfoPanel renders the sysinfo panel: key/value rows at the top and a palette
 // swatch row pinned to the bottom.
-func sysInfoPanel(width, height int, rows [][2]string) string {
+func sysInfoPanel(width, height int, rows [][2]string, selected int, focused bool) string {
 	body := make([]string, 0, height-2)
 	body = append(body, "")
-	for _, r := range rows {
-		body = append(body, dimStyle.Render(r[0]), r[1], "")
+	for i, r := range rows {
+		if i == selected {
+			body = append(body, dimStyle.Render(r[0]), accentStyle.Render(r[1]+" <"), "")
+		} else {
+			body = append(body, dimStyle.Render(r[0]), r[1], "")
+		}
 	}
 	if n := height - 3 - len(body); n > 0 {
 		body = append(body, make([]string, n)...)
 	}
 	body = append(body, swatchRow(swatchColors))
-	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"))
+	return components.Panel("sysinfo", width, height, strings.Join(body, "\n"), focused)
 }
 
 // swatchRow renders each colour as a two-cell block joined by a space.

@@ -12,6 +12,8 @@ const (
 	ColorAccent = "#7E9CD8"
 	// ColorWarm is the warm highlight color (carpYellow).
 	ColorWarm = "#E6C384"
+	// ColorBoatYellow1 is the dimmer, muted yellow (boatYellow2).
+	ColorBoatYellow1 = "#938056"
 	// ColorFaint is the panel border color (sumiInk5).
 	ColorFaint = "#363646"
 )

@@ -21,6 +21,9 @@ var (
 	panelBorderStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color(style.ColorFaint)).
 				Inline(true)
+	panelSelectedBorderStyle = lipgloss.NewStyle().
+					Foreground(lipgloss.Color(style.ColorBoatYellow1)).
+					Inline(true)
 	panelTitleStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(style.ColorWarm)).
 			Bold(true).
@@ -30,9 +33,14 @@ var (
 // Panel draws a square box of the given outer size with title embedded in the
 // top border: ┌ { whoami } ─────────────┐. Every emitted line is exactly width
 // visible columns; over-wide titles and body lines are truncated to fit.
-func Panel(title string, width, height int, body string) string {
+func Panel(title string, width, height int, body string, focused bool) string {
 	if width <= 0 || height <= 0 {
 		return ""
+	}
+
+	borderStyle := panelBorderStyle
+	if focused {
+		borderStyle = panelSelectedBorderStyle
 	}
 
 	titleMaxWidth := width - lipgloss.Width("┌"+titleOpen+titleClose+"┐")
@@ -40,20 +48,20 @@ func Panel(title string, width, height int, body string) string {
 	dashes := max(0, titleMaxWidth-lipgloss.Width(text))
 	innerWidth := width - lipgloss.Width("│  │")
 
-	top := panelBorderStyle.Render("┌") +
+	top := borderStyle.Render("┌") +
 		panelTitleStyle.Render(titleOpen+text+titleClose) +
-		panelBorderStyle.Render(strings.Repeat("─", dashes)+"┐")
+		borderStyle.Render(strings.Repeat("─", dashes)+"┐")
 
 	lines := make([]string, max(0, height-2))
 	copy(lines, strings.Split(body, "\n"))
 
 	rows := make([]string, 0, height)
 	rows = append(rows, top)
-	left, right := panelBorderStyle.Render("│ "), panelBorderStyle.Render(" │")
+	left, right := borderStyle.Render("│ "), borderStyle.Render(" │")
 	for _, line := range lines {
 		rows = append(rows, left+padTo(line, innerWidth)+right)
 	}
-	rows = append(rows, panelBorderStyle.Render("└"+strings.Repeat("─", width-2)+"┘"))
+	rows = append(rows, borderStyle.Render("└"+strings.Repeat("─", width-2)+"┘"))
 
 	return strings.Join(rows, "\n")
 }
