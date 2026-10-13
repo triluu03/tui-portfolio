@@ -41,8 +41,8 @@ var projects = []Project{
 	{
 		Name:        "pennysheet",
 		Title:       "Pennysheet",
-		StartTime:   "Jun 2026",
-		EndTime:     "Aug 2026",
+		StartTime:   "May 2026",
+		EndTime:     "Sep 2026",
 		Description: "A personal finance tracking app based on event-sourcing.",
 		Highlights:  []string{"Built a robust event-sourcing architecture.", "Integrated to Claude/Codex with a MCP server.", "Implemented real-time expenses tracking."},
 		Stack:       []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
@@ -72,14 +72,28 @@ func (p Projects) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok && (p.focus == nil || !*p.focus) {
+	key, ok := msg.(tea.KeyPressMsg)
+	if !ok {
+		return p, nil
+	}
+
+	if p.focus == nil || !*p.focus {
 		switch key.String() {
 		case "up", "k":
 			p.selected = (p.selected + nProjects - 1) % nProjects
 		case "down", "j":
 			p.selected = (p.selected + 1) % nProjects
 		}
+		return p, nil
 	}
+
+	if *p.focus {
+		switch key.String() {
+		case "enter":
+			return p, openURL(projects[p.selected].Source)
+		}
+	}
+
 	return p, nil
 }
 
@@ -151,14 +165,21 @@ func projectDetailBody(p Project, focused bool) string {
 	for _, h := range p.Highlights {
 		lines = append(lines, accentStyle.Render("- ")+h)
 	}
-	var links []string
-
-	if p.Source != "" {
-		links = append(links, accentStyle.Render("→ source: ")+dimStyle.Render(p.Source))
-	}
 
 	lines = append(lines, "")
-	lines = append(lines, links...)
+	if p.Source != "" {
+		if focused {
+			lines = append(lines,
+				accentStyle.Render("→ source: ")+
+					accentStyle.Render(p.Source+" (enter to open ↗)"),
+			)
+		} else {
+			lines = append(lines,
+				accentStyle.Render("→ source: ")+
+					dimStyle.Render(p.Source),
+			)
+		}
+	}
 
 	return components.Panel(
 		"README.md",

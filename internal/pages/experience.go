@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 	figure "github.com/common-nighthawk/go-figure"
 
 	"github.com/triluu03/tui-portfolio/internal/components"
@@ -101,7 +102,12 @@ func (e Experience) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok && (e.focus == nil || !*e.focus) {
+	key, ok := msg.(tea.KeyPressMsg)
+	if !ok {
+		return e, nil
+	}
+
+	if e.focus == nil || !*e.focus {
 		switch key.String() {
 		case "up", "k":
 			e.selected = (e.selected + nExperienceRecords - 1) % nExperienceRecords
@@ -109,6 +115,14 @@ func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			e.selected = (e.selected + 1) % nExperienceRecords
 		}
 	}
+
+	if *e.focus {
+		switch key.String() {
+		case "enter":
+			return e, openURL(experienceRecords[e.selected].RelatedLink)
+		}
+	}
+
 	return e, nil
 }
 
@@ -189,9 +203,22 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 			}
 		}
 	}
+
 	lines = append(lines, "")
 	if r.RelatedLink != "" {
-		lines = append(lines, accentStyle.Render("→ related: ")+dimStyle.Render(r.RelatedLink))
+		if focused {
+			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
+			linkWidth := innerWidth - lipgloss.Width("→ related: ") - lipgloss.Width(" (enter to open ↗)")
+			lines = append(lines,
+				accentStyle.Render("→ related: "+ansi.Truncate(r.RelatedLink, linkWidth, "…"))+
+					accentStyle.Render(" (enter to open ↗)"),
+			)
+		} else {
+			lines = append(lines,
+				accentStyle.Render("→ related: ")+
+					dimStyle.Render(r.RelatedLink),
+			)
+		}
 	}
 
 	return components.Panel(
