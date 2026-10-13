@@ -21,22 +21,22 @@ var Pages = []Descriptor{
 	{
 		Title: "About",
 		Path:  "~/portfolio",
-		New:   func(focus *bool, _ *bool) tea.Model { return About{focus: focus} },
+		New:   func(focus, _ *bool) tea.Model { return About{focus: focus} },
 	},
 	{
 		Title: "Projects",
 		Path:  "~/portfolio/projects",
-		New:   func(focus *bool, _ *bool) tea.Model { return Projects{focus: focus} },
+		New:   func(focus, _ *bool) tea.Model { return Projects{focus: focus} },
 	},
 	{
 		Title: "Experience",
 		Path:  "~/portfolio/experience",
-		New:   func(focus *bool, _ *bool) tea.Model { return Experience{focus: focus} },
+		New:   func(focus, _ *bool) tea.Model { return Experience{focus: focus} },
 	},
 	{
 		Title: "Contact",
 		Path:  "~/portfolio/contact",
-		New:   func(focus *bool, editMode *bool) tea.Model { return Contact{focus: focus, editMode: editMode} },
+		New:   func(focus, editMode *bool) tea.Model { return Contact{focus: focus, editMode: editMode} },
 	},
 }
 
