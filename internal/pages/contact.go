@@ -35,10 +35,19 @@ var contactLinks = []contactLink{
 
 var nContactLinks = len(contactLinks)
 
+const nEditingFields = 3
+
 // Contact is the contact page.
 type Contact struct {
+	focus    *bool
+	editMode *bool
+
 	selectedContactLink int
-	focus               *bool
+
+	editingField int
+
+	// composeFields are: "name", "email", and "message" (in this order)
+	composeFields [3]string
 }
 
 // Init is a no-op placeholder.
@@ -46,7 +55,12 @@ func (c Contact) Init() tea.Cmd { return nil }
 
 // Update is a no-op placeholder.
 func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if key, ok := msg.(tea.KeyPressMsg); ok && (*c.focus) {
+	key, ok := msg.(tea.KeyPressMsg)
+	if !ok {
+		return c, nil
+	}
+
+	if *c.focus {
 		switch key.String() {
 		case "up", "k":
 			c.selectedContactLink = (c.selectedContactLink + nContactLinks - 1) % nContactLinks
@@ -57,7 +71,36 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	if !*c.editMode && !*c.focus {
+		switch key.String() {
+		case "tab", "down", "j":
+			*c.editMode = true
+			c.editingField = 0
+		}
+		return c, nil
+	}
+
+	if *c.editMode {
+		switch key.String() {
+		case "ctrl+enter", "alt+enter":
+			// clear all the fields without sending anything for now
+			c.composeFields = [3]string{"", "", ""}
+			c.editingField = 0
+			*c.editMode = false
+		case "up":
+			c.editingField = (c.editingField + nEditingFields - 1) % nEditingFields
+		case "tab", "down":
+			c.editingField = (c.editingField + 1) % nEditingFields
+		case "backspace":
+			c.composeFields[c.editingField] = deleteLastChar(c.composeFields[c.editingField])
+		default:
+			c.composeFields[c.editingField] += key.Text
+		}
+		return c, nil
+	}
+
 	return c, nil
+
 }
 
 // View renders the contact page.
@@ -65,24 +108,38 @@ func (c Contact) View() tea.View { return tea.NewView(c.renderContact()) }
 
 // renderContact builds the two-column contact page padded to the pinned frame size.
 func (c Contact) renderContact() string {
-	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, !*c.focus)
+	compose := contactComposePanel(
+		style.ContactComposeWidth,
+		style.ContentHeight,
+		*c.editMode,
+		c.editingField,
+		c.composeFields,
+		!*c.focus,
+	)
 	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, c.selectedContactLink, *c.focus)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, compose, strings.Repeat(" ", style.ColumnGap), links)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 
 // contactComposePanel renders the mail compose panel.
-func contactComposePanel(width, height int, focused bool) string {
+func contactComposePanel(width, height int, editing bool, editingField int, composeFields [3]string, focused bool) string {
 	innerWidth := width - lipgloss.Width("│  │")
 	promptLine := accentStyle.Render("$ mail " + recipientEmail)
 
 	body := []string{"", promptLine, ""}
-	for _, f := range [][2]string{
-		{"name:", "Your Name"},
-		{"email:", "you@example.com"},
-		{"message:", "Hi! I'd like to talk about..."},
-	} {
-		body = append(body, dimStyle.Render(f[0]), placeholderBox(innerWidth, f[1]), "")
+	for i, fieldName := range [3]string{"name", "email", "message"} {
+		cursor, fieldStyle, focus := "", dimStyle, false
+		if editing && i == editingField {
+			fieldStyle = accentStyle
+			cursor = "█"
+			focus = true
+		}
+
+		body = append(body,
+			fieldStyle.Render(fieldName),
+			composeFieldBox(innerWidth, fieldStyle.Render(composeFields[i]+cursor), focus),
+			"",
+		)
 	}
 	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter to send"))
 
@@ -128,12 +185,25 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 	return components.Panel("links", width, height, strings.Join(body, "\n"), focused)
 }
 
-// placeholderBox renders a single-line bordered box sized to width visible
+// composeFieldBox renders a single-line bordered box sized to width visible
 // columns. The border uses the faint panel color and the text is dim.
-func placeholderBox(width int, text string) string {
+func composeFieldBox(width int, text string, focused bool) string {
+	borderStyle := style.ColorFaint
+	if focused {
+		borderStyle = style.ColorAccent
+	}
+
 	return lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color(style.ColorFaint)).
+		BorderForeground(lipgloss.Color(borderStyle)).
 		Width(width).
-		Render(dimStyle.Render(text))
+		Render(text)
+}
+
+func deleteLastChar(s string) string {
+	r := []rune(s)
+	if len(r) == 0 {
+		return s
+	}
+	return string(r[:len(r)-1])
 }

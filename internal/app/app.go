@@ -13,21 +13,30 @@ import (
 
 // The root application Bubble Tea's Model.
 type Model struct {
-	pages      []tea.Model
-	current    int
+	pages   []tea.Model
+	current int
+
 	termWidth  int
 	termHeight int
+
+	// Global states shared with all pages
 	focusRight *bool
+	editMode   *bool
 }
 
 // Return a new model with the pages wired up into the states.
 func New() Model {
 	focus := new(bool)
+	editMode := new(bool)
+
 	var m Model
 	m.focusRight = focus
+	m.editMode = editMode
+
 	for _, d := range pages.Pages {
-		m.pages = append(m.pages, d.New(focus))
+		m.pages = append(m.pages, d.New(focus, editMode))
 	}
+
 	return m
 }
 
@@ -49,19 +58,33 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.termHeight = msg.Height
 		return m, nil
 	case tea.KeyPressMsg:
-		switch msg.String() {
-		case "q", "ctrl+c":
+		if msg.String() == "ctrl+c" {
 			return m, tea.Quit
-		case "left", "h", "esc":
-			*m.focusRight = false
-			return m, nil
-		case "right", "l", "enter":
-			*m.focusRight = true
-			return m, nil
-		case "1", "2", "3", "4":
-			m.current = int(msg.String()[0] - '1')
-			*m.focusRight = false
-			return m, nil
+		}
+
+		if *m.editMode {
+			switch msg.String() {
+			case "esc":
+				*m.editMode = false
+				return m, nil
+			}
+		}
+
+		if !*m.editMode {
+			switch msg.String() {
+			case "q":
+				return m, tea.Quit
+			case "left", "h", "esc":
+				*m.focusRight = false
+				return m, nil
+			case "right", "l", "enter":
+				*m.focusRight = true
+				return m, nil
+			case "1", "2", "3", "4":
+				m.current = int(msg.String()[0] - '1')
+				*m.focusRight = false
+				return m, nil
+			}
 		}
 	}
 
