@@ -35,7 +35,7 @@ var contactLinks = []contactLink{
 
 var nContactLinks = len(contactLinks)
 
-var nEditingFields = 3
+const nEditingFields = 3
 
 // Contact is the contact page.
 type Contact struct {
