@@ -137,7 +137,7 @@ func contactComposePanel(width, height int, editing bool, editingField int, comp
 
 		body = append(body,
 			fieldStyle.Render(fieldName),
-			placeholderBox(innerWidth, fieldStyle.Render(composeFields[i]+cursor), focus),
+			composeFieldBox(innerWidth, fieldStyle.Render(composeFields[i]+cursor), focus),
 			"",
 		)
 	}
@@ -185,9 +185,9 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 	return components.Panel("links", width, height, strings.Join(body, "\n"), focused)
 }
 
-// placeholderBox renders a single-line bordered box sized to width visible
+// composeFieldBox renders a single-line bordered box sized to width visible
 // columns. The border uses the faint panel color and the text is dim.
-func placeholderBox(width int, text string, focused bool) string {
+func composeFieldBox(width int, text string, focused bool) string {
 	borderStyle := style.ColorFaint
 	if focused {
 		borderStyle = style.ColorAccent
