@@ -24,7 +24,7 @@ func Footer(width int, title string) string {
 	hints := lipgloss.NewStyle().
 		Foreground(lipgloss.Color(style.ColorDim)).
 		Inline(true).
-		Render("1-4 switch · ↑↓ move · ←→ focus · enter open · esc cancel · q quit")
+		Render("1-4 switch · ↑↓ move · ←→ focus · ctrl+click open · esc cancel · q quit")
 
 	gaps := width - lipgloss.Width(footerTitle) - lipgloss.Width(hints)
 	if gaps < 1 {
