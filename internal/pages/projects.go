@@ -159,12 +159,13 @@ func projectDetailBody(p Project, focused bool) string {
 		if focused {
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
-					accentStyle.Render(p.Source+" (enter to open ↗)"),
+					hyperlink(p.Source, accentStyle.Render(p.Source))+
+					accentStyle.Render(" (enter to open ↗)"),
 			)
 		} else {
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
-					dimStyle.Render(p.Source),
+					hyperlink(p.Source, dimStyle.Render(p.Source)),
 			)
 		}
 	}

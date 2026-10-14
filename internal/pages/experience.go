@@ -198,13 +198,14 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
 			linkWidth := innerWidth - lipgloss.Width("→ related: ") - lipgloss.Width(" (enter to open ↗)")
 			lines = append(lines,
-				accentStyle.Render("→ related: "+ansi.Truncate(r.RelatedLink, linkWidth, "…"))+
+				accentStyle.Render("→ related: ")+
+					hyperlink(r.RelatedLink, accentStyle.Render(ansi.Truncate(r.RelatedLink, linkWidth, "…")))+
 					accentStyle.Render(" (enter to open ↗)"),
 			)
 		} else {
 			lines = append(lines,
 				accentStyle.Render("→ related: ")+
-					dimStyle.Render(r.RelatedLink),
+					hyperlink(r.RelatedLink, dimStyle.Render(r.RelatedLink)),
 			)
 		}
 	}

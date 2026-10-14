@@ -158,7 +158,7 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 	body := make([]string, 0, height-2)
 	kv := make([]keyValueRow, len(contactLinks))
 	for i, l := range contactLinks {
-		kv[i] = keyValueRow{label: l.label, value: l.value, decoration: " ↗"}
+		kv[i] = keyValueRow{label: l.label, value: l.value, url: l.url, decoration: " ↗"}
 	}
 	body = append(body, keyValueBody(kv, selected)...)
 
