@@ -1,1 +1,4 @@
 .ssh
+builds/
+
+deploy.sh
