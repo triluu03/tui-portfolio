@@ -1,7 +1,9 @@
 package pages
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -41,8 +43,10 @@ var Pages = []Descriptor{
 }
 
 // openURL launches url in the user's default browser without blocking the UI.
+// Over an SSH session there is no way to open a browser on the client machine,
+// so it is a no-op: links are rendered as clickable OSC 8 hyperlinks instead.
 func openURL(url string) tea.Cmd {
-	if url == "" {
+	if url == "" || isRemoteSession() {
 		return nil
 	}
 	return func() tea.Msg {
@@ -60,4 +64,18 @@ func openURL(url string) tea.Cmd {
 		}
 		return nil
 	}
+}
+
+// isRemoteSession reports whether the app is running over an SSH session.
+func isRemoteSession() bool {
+	return os.Getenv("SSH_CONNECTION") != "" ||
+		os.Getenv("SSH_CLIENT") != "" ||
+		os.Getenv("SSH_TTY") != ""
+}
+
+// hyperlink wraps text in an OSC 8 escape sequence so the user's terminal
+// renders it as a clickable link. Clicking opens the URL in the client's
+// browser, which works locally and over SSH.
+func hyperlink(url, text string) string {
+	return fmt.Sprintf("\x1b]8;;%s\x1b\\%s\x1b]8;;\x1b\\", url, text)
 }

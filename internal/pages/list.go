@@ -33,6 +33,7 @@ func listBody(entries []listEntry, selected int) string {
 type keyValueRow struct {
 	label      string
 	value      string
+	url        string
 	decoration string
 }
 
@@ -42,9 +43,17 @@ func keyValueBody(rows []keyValueRow, selected int) []string {
 	body := []string{""}
 	for i, r := range rows {
 		if i == selected {
-			body = append(body, dimStyle.Render(r.label), accentStyle.Render(r.value+r.decoration), "")
+			value := accentStyle.Render(r.value + r.decoration)
+			if r.url != "" {
+				value = hyperlink(r.url, value)
+			}
+			body = append(body, dimStyle.Render(r.label), value, "")
 		} else {
-			body = append(body, dimStyle.Render(r.label), r.value, "")
+			value := r.value
+			if r.url != "" {
+				value = hyperlink(r.url, value)
+			}
+			body = append(body, dimStyle.Render(r.label), value, "")
 		}
 	}
 	return body

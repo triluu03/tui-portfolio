@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
+	"github.com/charmbracelet/x/ansi"
 	figure "github.com/common-nighthawk/go-figure"
 
 	"github.com/triluu03/tui-portfolio/internal/components"
@@ -157,14 +158,17 @@ func projectDetailBody(p Project, focused bool) string {
 	lines = append(lines, "")
 	if p.Source != "" {
 		if focused {
+			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
+			linkWidth := innerWidth - lipgloss.Width("→ source: ") - lipgloss.Width(" (ctrl+click to open ↗)")
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
-					accentStyle.Render(p.Source+" (enter to open ↗)"),
+					hyperlink(p.Source, accentStyle.Render(ansi.Truncate(p.Source, linkWidth, "…")))+
+					accentStyle.Render(" (ctrl+click to open ↗)"),
 			)
 		} else {
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
-					dimStyle.Render(p.Source),
+					hyperlink(p.Source, dimStyle.Render(p.Source)),
 			)
 		}
 	}
