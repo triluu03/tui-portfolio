@@ -147,27 +147,15 @@ func (e Experience) renderExperience() string {
 
 // experienceListPanel renders the experience list, marking the selected record.
 func experienceListPanel(selected int, focused bool) string {
-	rows := []string{""} // leading blank spacer
+	entries := make([]listEntry, len(experienceRecords))
 	for i, r := range experienceRecords {
-		marker, lineStyle := "  ", dimStyle
-		if i == selected {
-			marker, lineStyle = "> ", accentStyle
-		}
-		rows = append(rows,
-			lineStyle.Render(marker+r.CompanyName),
-			lineStyle.Render("  "+r.Position),
-			lineStyle.Render("  "+r.StartTime+" - "+r.EndTime),
-		)
-		if i < nExperienceRecords-1 {
-			rows = append(rows, "")
-		}
+		entries[i] = listEntry{lines: []string{r.CompanyName, r.Position, r.StartTime + " - " + r.EndTime}}
 	}
-
 	return components.Panel(
 		fmt.Sprintf("experience (%d)", nExperienceRecords),
 		style.ProjectListWidth,
 		style.ContentHeight,
-		strings.Join(rows, "\n"),
+		listBody(entries, selected),
 		focused,
 	)
 }

@@ -115,14 +115,11 @@ func whoamiPanel(width, height int, focused bool) string {
 // swatch row pinned to the bottom.
 func sysInfoPanel(width, height int, rows [][2]string, selected int, focused bool) string {
 	body := make([]string, 0, height-2)
-	body = append(body, "")
+	kv := make([]keyValueRow, len(rows))
 	for i, r := range rows {
-		if i == selected {
-			body = append(body, dimStyle.Render(r[0]), accentStyle.Render(r[1]+" <"), "")
-		} else {
-			body = append(body, dimStyle.Render(r[0]), r[1], "")
-		}
+		kv[i] = keyValueRow{label: r[0], value: r[1], decoration: " <"}
 	}
+	body = append(body, keyValueBody(kv, selected)...)
 	if n := height - 3 - len(body); n > 0 {
 		body = append(body, make([]string, n)...)
 	}

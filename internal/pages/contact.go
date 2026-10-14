@@ -156,22 +156,11 @@ func contactComposePanel(width, height int, editing bool, editingField int, comp
 // bottom: filler lines = panel inner height - links - signature lines.
 func contactLinksPanel(width, height int, selected int, focused bool) string {
 	body := make([]string, 0, height-2)
-	body = append(body, "")
+	kv := make([]keyValueRow, len(contactLinks))
 	for i, l := range contactLinks {
-		if i == selected {
-			body = append(body,
-				dimStyle.Render(l.label),
-				accentStyle.Render(l.value+" ↗"),
-				"",
-			)
-		} else {
-			body = append(body,
-				dimStyle.Render(l.label),
-				l.value,
-				"",
-			)
-		}
+		kv[i] = keyValueRow{label: l.label, value: l.value, decoration: " ↗"}
 	}
+	body = append(body, keyValueBody(kv, selected)...)
 
 	signature := []string{
 		warmStyle.Render(signatureName),

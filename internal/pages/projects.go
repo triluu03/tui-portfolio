@@ -118,27 +118,15 @@ func (p Projects) renderProjects() string {
 
 // projectListBody renders the projects list, marking the selected row.
 func projectListBody(selected int, focused bool) string {
-	rows := []string{""}
+	entries := make([]listEntry, len(projects))
 	for i, p := range projects {
-		marker, lineStyle := "  ", dimStyle
-		if i == selected {
-			marker, lineStyle = "> ", accentStyle
-		}
-		rows = append(rows,
-			lineStyle.Render(marker+p.Name),
-			lineStyle.Render("  "+p.StartTime+" - "+p.EndTime),
-		)
-		if i < nProjects-1 {
-			rows = append(rows, "")
-		}
-
+		entries[i] = listEntry{lines: []string{p.Name, p.StartTime + " - " + p.EndTime}}
 	}
-
 	return components.Panel(
 		fmt.Sprintf("projects (%d)", nProjects),
 		style.ProjectListWidth,
 		style.ContentHeight,
-		strings.Join(rows, "\n"),
+		listBody(entries, selected),
 		focused,
 	)
 }
