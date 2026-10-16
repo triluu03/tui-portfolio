@@ -143,6 +143,10 @@ func contactComposePanel(width, height int, editing bool, editingField int, comp
 	}
 	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter to send"))
 
+	if editing {
+		body = append(body, warmStyle.Render("[EDITING MODE] (esc to exit)"))
+	}
+
 	return components.Panel(
 		"mail --compose",
 		width,
