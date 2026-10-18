@@ -52,6 +52,7 @@ var (
 	accentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorAccent))
 	dimStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
 	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
+	errorStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorRed))
 )
 
 // About is the about page.
