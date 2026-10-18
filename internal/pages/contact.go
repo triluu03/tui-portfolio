@@ -109,7 +109,7 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "down", "j":
 			c.selectedContactLink = (c.selectedContactLink + 1) % nContactLinks
 		case "enter":
-			return c, openURL(contactLinks[c.selectedContactLink].url)
+			return c, tea.SetClipboard(contactLinks[c.selectedContactLink].url)
 		}
 	}
 
@@ -246,7 +246,7 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 	}
 	body = append(body, signature...)
 
-	return components.Panel("links", width, height, strings.Join(body, "\n"), focused)
+	return components.Panel("links (enter to copy)", width, height, strings.Join(body, "\n"), focused)
 }
 
 // composeFieldBox renders a single-line bordered box sized to width visible

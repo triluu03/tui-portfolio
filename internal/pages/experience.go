@@ -119,7 +119,7 @@ func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if *e.focus {
 		switch key.String() {
 		case "enter":
-			return e, openURL(experienceRecords[e.selected].RelatedLink)
+			return e, tea.SetClipboard(experienceRecords[e.selected].RelatedLink)
 		}
 	}
 
@@ -196,11 +196,11 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 	if r.RelatedLink != "" {
 		if focused {
 			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
-			linkWidth := innerWidth - lipgloss.Width("→ related: ") - lipgloss.Width(" (ctrl+click to open ↗)")
+			linkWidth := innerWidth - lipgloss.Width("→ related: ") - lipgloss.Width(" (enter to copy link ↗)")
 			lines = append(lines,
 				accentStyle.Render("→ related: ")+
 					hyperlink(r.RelatedLink, accentStyle.Render(ansi.Truncate(r.RelatedLink, linkWidth, "…")))+
-					accentStyle.Render(" (ctrl+click to open ↗)"),
+					accentStyle.Render(" (enter to copy link ↗)"),
 			)
 		} else {
 			lines = append(lines,

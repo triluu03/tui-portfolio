@@ -91,7 +91,7 @@ func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if *p.focus {
 		switch key.String() {
 		case "enter":
-			return p, openURL(projects[p.selected].Source)
+			return p, tea.SetClipboard(projects[p.selected].Source)
 		}
 	}
 
@@ -159,11 +159,11 @@ func projectDetailBody(p Project, focused bool) string {
 	if p.Source != "" {
 		if focused {
 			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
-			linkWidth := innerWidth - lipgloss.Width("→ source: ") - lipgloss.Width(" (ctrl+click to open ↗)")
+			linkWidth := innerWidth - lipgloss.Width("→ source: ") - lipgloss.Width(" (enter to copy link ↗)")
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
 					hyperlink(p.Source, accentStyle.Render(ansi.Truncate(p.Source, linkWidth, "…")))+
-					accentStyle.Render(" (ctrl+click to open ↗)"),
+					accentStyle.Render(" (enter to copy link ↗)"),
 			)
 		} else {
 			lines = append(lines,
