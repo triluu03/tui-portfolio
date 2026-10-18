@@ -187,9 +187,18 @@ func contactComposePanel(width, height int, c Contact) string {
 			focus = true
 		}
 
+		innerHeight := 1
+		if fieldName == "message" {
+			innerHeight = 11
+		}
+
 		body = append(body,
 			fieldStyle.Render(fieldName),
-			composeFieldBox(innerWidth, fieldStyle.Render(c.composeFields[i]+cursor), focus),
+			composeFieldBox(
+				innerWidth, innerHeight,
+				fieldStyle.Render(c.composeFields[i]+cursor),
+				focus,
+			),
 			"",
 		)
 	}
@@ -242,7 +251,7 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 
 // composeFieldBox renders a single-line bordered box sized to width visible
 // columns. The border uses the faint panel color and the text is dim.
-func composeFieldBox(width int, text string, focused bool) string {
+func composeFieldBox(width, height int, text string, focused bool) string {
 	borderStyle := style.ColorFaint
 	if focused {
 		borderStyle = style.ColorAccent
@@ -252,6 +261,7 @@ func composeFieldBox(width int, text string, focused bool) string {
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color(borderStyle)).
 		Width(width).
+		Height(height).
 		Render(text)
 }
 
@@ -306,7 +316,7 @@ func isValidEmail(s string) bool {
 // buildTelegramMessage formats the message, truncating the body so the final
 // text stays under Telegram's limit with margin.
 func buildTelegramMessage(fields [3]string) string {
-	header := "New contact message\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
+	header := "New contact\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
 	message := fields[messageField]
 	return header + message
 }
