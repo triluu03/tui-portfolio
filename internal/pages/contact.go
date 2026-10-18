@@ -1,10 +1,17 @@
 package pages
 
 import (
+	"context"
+	"fmt"
+	"net/mail"
+	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/mymmrac/telego"
 
 	"github.com/triluu03/tui-portfolio/internal/components"
 	"github.com/triluu03/tui-portfolio/internal/style"
@@ -37,6 +44,23 @@ var nContactLinks = len(contactLinks)
 
 const nEditingFields = 3
 
+// Compose field indices for [3]string{"name", "email", "message"}.
+const (
+	nameField = iota
+	emailField
+	messageField
+)
+
+const (
+	// maxNameRunes and maxEmailRunes bound the untrusted compose fields.
+	// The values are meant to ensure that these two fields are always
+	// rendered within one line.
+	maxNameRunes  = style.ContactComposeWidth - 4
+	maxEmailRunes = style.ContactComposeWidth - 4
+
+	statusSent = "sent"
+)
+
 // Contact is the contact page.
 type Contact struct {
 	focus    *bool
@@ -48,13 +72,31 @@ type Contact struct {
 
 	// composeFields are: "name", "email", and "message" (in this order)
 	composeFields [3]string
+
+	// sending is true while an async Telegram send is in flight.
+	sending bool
+	// status is shown under the send hint ("sent", an error, or empty).
+	status string
 }
 
 // Init is a no-op placeholder.
 func (c Contact) Init() tea.Cmd { return nil }
 
-// Update is a no-op placeholder.
+// Update handles key presses and the result of an async Telegram send.
 func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if result, ok := msg.(SendResultMsg); ok {
+		c.sending = false
+		if result.err != nil {
+			c.status = result.err.Error()
+			return c, nil
+		}
+		c.status = statusSent
+		c.composeFields = [3]string{"", "", ""}
+		c.editingField = 0
+		*c.editMode = false
+		return c, nil
+	}
+
 	key, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return c, nil
@@ -81,20 +123,37 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	if *c.editMode {
+		if c.sending {
+			return c, nil
+		}
+
 		switch key.String() {
 		case "ctrl+enter", "alt+enter":
-			// clear all the fields without sending anything for now
-			c.composeFields = [3]string{"", "", ""}
-			c.editingField = 0
-			*c.editMode = false
+			fields, err := validateComposeFields(c.composeFields)
+			if err != nil {
+				c.status = err.Error()
+				return c, nil
+			}
+			c.composeFields = fields
+			c.sending = true
+			c.status = ""
+
+			text := buildTelegramMessage(fields)
+			return c, func() tea.Msg {
+				return SendResultMsg{err: sendTelegramMessage(text)}
+			}
 		case "up":
 			c.editingField = (c.editingField + nEditingFields - 1) % nEditingFields
+			c.status = ""
 		case "tab", "down":
 			c.editingField = (c.editingField + 1) % nEditingFields
+			c.status = ""
 		case "backspace":
 			c.composeFields[c.editingField] = deleteLastChar(c.composeFields[c.editingField])
+			c.status = ""
 		default:
 			c.composeFields[c.editingField] += key.Text
+			c.status = ""
 		}
 		return c, nil
 	}
@@ -108,47 +167,63 @@ func (c Contact) View() tea.View { return tea.NewView(c.renderContact()) }
 
 // renderContact builds the two-column contact page padded to the pinned frame size.
 func (c Contact) renderContact() string {
-	compose := contactComposePanel(
-		style.ContactComposeWidth,
-		style.ContentHeight,
-		*c.editMode,
-		c.editingField,
-		c.composeFields,
-		!*c.focus,
-	)
+	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, c)
 	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, c.selectedContactLink, *c.focus)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, compose, strings.Repeat(" ", style.ColumnGap), links)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
 
 // contactComposePanel renders the mail compose panel.
-func contactComposePanel(width, height int, editing bool, editingField int, composeFields [3]string, focused bool) string {
+func contactComposePanel(width, height int, c Contact) string {
 	innerWidth := width - lipgloss.Width("│  │")
 	promptLine := accentStyle.Render("$ mail " + recipientEmail)
 
 	body := []string{"", promptLine, ""}
 	for i, fieldName := range [3]string{"name", "email", "message"} {
 		cursor, fieldStyle, focus := "", dimStyle, false
-		if editing && i == editingField {
+		if *c.editMode && i == c.editingField {
 			fieldStyle = accentStyle
 			cursor = "█"
 			focus = true
 		}
 
+		innerHeight := 1
+		if fieldName == "message" {
+			innerHeight = 11
+		}
+
 		body = append(body,
 			fieldStyle.Render(fieldName),
-			composeFieldBox(innerWidth, fieldStyle.Render(composeFields[i]+cursor), focus),
+			composeFieldBox(
+				innerWidth, innerHeight,
+				fieldStyle.Render(c.composeFields[i]+cursor),
+				focus,
+			),
 			"",
 		)
 	}
 	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter to send"))
+
+	if c.sending {
+		body = append(body, dimStyle.Render("sending..."))
+	} else if c.status != "" {
+		statusStyle := errorStyle
+		if c.status == statusSent {
+			statusStyle = accentStyle
+		}
+		body = append(body, statusStyle.Render(c.status))
+	}
+
+	if *c.editMode {
+		body = append(body, warmStyle.Render("[EDITING MODE] (esc to exit)"))
+	}
 
 	return components.Panel(
 		"mail --compose",
 		width,
 		height,
 		strings.Join(body, "\n"),
-		focused,
+		!*c.focus,
 	)
 }
 
@@ -176,7 +251,7 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 
 // composeFieldBox renders a single-line bordered box sized to width visible
 // columns. The border uses the faint panel color and the text is dim.
-func composeFieldBox(width int, text string, focused bool) string {
+func composeFieldBox(width, height int, text string, focused bool) string {
 	borderStyle := style.ColorFaint
 	if focused {
 		borderStyle = style.ColorAccent
@@ -186,6 +261,7 @@ func composeFieldBox(width int, text string, focused bool) string {
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color(borderStyle)).
 		Width(width).
+		Height(height).
 		Render(text)
 }
 
@@ -195,4 +271,84 @@ func deleteLastChar(s string) string {
 		return s
 	}
 	return string(r[:len(r)-1])
+}
+
+// SendResultMsg reports the outcome of an async Telegram send. It is exported
+// so the app router can deliver it to the contact page even when another page
+// is active.
+type SendResultMsg struct {
+	err error
+}
+
+// validateComposeFields trims and validates untrusted compose input and
+// returns the trimmed fields so the UI reflects what will be sent.
+func validateComposeFields(fields [3]string) ([3]string, error) {
+	for i := range fields {
+		fields[i] = strings.TrimSpace(fields[i])
+	}
+	switch {
+	case fields[nameField] == "":
+		return fields, fmt.Errorf("name is required")
+	case fields[emailField] == "":
+		return fields, fmt.Errorf("email is required")
+	case fields[messageField] == "":
+		return fields, fmt.Errorf("message is required")
+	case len([]rune(fields[nameField])) > maxNameRunes:
+		return fields, fmt.Errorf("name is too long")
+	case len([]rune(fields[emailField])) > maxEmailRunes:
+		return fields, fmt.Errorf("email is too long")
+	case !isValidEmail(fields[emailField]):
+		return fields, fmt.Errorf("email is invalid")
+	}
+	return fields, nil
+}
+
+// isValidEmail reports whether s is a single, reply-able email address.
+func isValidEmail(s string) bool {
+	addr, err := mail.ParseAddress(s)
+	if err != nil || addr.Address != s {
+		return false
+	}
+	at := strings.IndexByte(s, '@')
+	return at > 0 && strings.IndexByte(s[at+1:], '.') > 0
+}
+
+// buildTelegramMessage formats the message, truncating the body so the final
+// text stays under Telegram's limit with margin.
+func buildTelegramMessage(fields [3]string) string {
+	header := "New contact\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
+	message := fields[messageField]
+	return header + message
+}
+
+// sendTelegramMessage posts text to the configured Telegram chat via telego. Both
+// TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be set; missing configuration
+// is reported as an error that the UI can surface.
+func sendTelegramMessage(text string) error {
+	token := os.Getenv("TELEGRAM_BOT_TOKEN")
+	chatID := os.Getenv("TELEGRAM_CHAT_ID")
+	if token == "" || chatID == "" {
+		return fmt.Errorf("send not configured: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID")
+	}
+	id, err := strconv.ParseInt(chatID, 10, 64)
+	if err != nil {
+		return fmt.Errorf("send not configured: TELEGRAM_CHAT_ID must be a numeric chat id")
+	}
+
+	bot, err := telego.NewBot(token, telego.WithDiscardLogger())
+	if err != nil {
+		return fmt.Errorf("failed to send message")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err = bot.SendMessage(ctx, &telego.SendMessageParams{
+		ChatID: telego.ChatID{ID: id},
+		Text:   text,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to send message")
+	}
+	return nil
 }

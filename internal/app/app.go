@@ -52,6 +52,14 @@ func (m Model) Init() tea.Cmd {
 // Update handles global key bindings, terminal resizes, and delegates other
 // messages to the active page.
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// NOTE: the contact page is always assumed to be the last page.
+	contactPageIndex := len(m.pages) - 1
+	if result, ok := msg.(pages.SendResultMsg); ok {
+		var cmd tea.Cmd
+		m.pages[contactPageIndex], cmd = m.pages[contactPageIndex].Update(result)
+		return m, cmd
+	}
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.termWidth = msg.Width

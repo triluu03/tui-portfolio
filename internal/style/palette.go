@@ -16,4 +16,6 @@ const (
 	ColorBoatYellow1 = "#938056"
 	// ColorFaint is the panel border color (sumiInk5).
 	ColorFaint = "#363646"
+	// ColorRed is for error
+	ColorRed = "#E82424"
 )
