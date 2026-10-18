@@ -109,7 +109,7 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "down", "j":
 			c.selectedContactLink = (c.selectedContactLink + 1) % nContactLinks
 		case "enter":
-			return c, openURL(contactLinks[c.selectedContactLink].url)
+			return c, tea.SetClipboard(contactLinks[c.selectedContactLink].url)
 		}
 	}
 

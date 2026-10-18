@@ -2,10 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"os/exec"
-	"runtime"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -40,37 +36,6 @@ var Pages = []Descriptor{
 		Path:  "~/portfolio/contact",
 		New:   func(focus, editMode *bool) tea.Model { return Contact{focus: focus, editMode: editMode} },
 	},
-}
-
-// openURL launches url in the user's default browser without blocking the UI.
-// Over an SSH session there is no way to open a browser on the client machine,
-// so it is a no-op: links are rendered as clickable OSC 8 hyperlinks instead.
-func openURL(url string) tea.Cmd {
-	if url == "" || isRemoteSession() {
-		return nil
-	}
-	return func() tea.Msg {
-		var cmd *exec.Cmd
-		switch runtime.GOOS {
-		case "darwin":
-			cmd = exec.Command("open", url)
-		case "windows":
-			cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-		default:
-			cmd = exec.Command("xdg-open", url)
-		}
-		if err := cmd.Start(); err != nil {
-			log.Printf("openURL %s: %v", url, err)
-		}
-		return nil
-	}
-}
-
-// isRemoteSession reports whether the app is running over an SSH session.
-func isRemoteSession() bool {
-	return os.Getenv("SSH_CONNECTION") != "" ||
-		os.Getenv("SSH_CLIENT") != "" ||
-		os.Getenv("SSH_TTY") != ""
 }
 
 // hyperlink wraps text in an OSC 8 escape sequence so the user's terminal
