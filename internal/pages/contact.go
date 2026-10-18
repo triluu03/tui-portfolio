@@ -151,6 +151,11 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "backspace":
 			c.composeFields[c.editingField] = deleteLastChar(c.composeFields[c.editingField])
 			c.status = ""
+		case "enter":
+			if c.editingField == messageField {
+				c.composeFields[c.editingField] += "\n"
+				c.status = ""
+			}
 		default:
 			c.composeFields[c.editingField] += key.Text
 			c.status = ""
@@ -249,13 +254,18 @@ func contactLinksPanel(width, height int, selected int, focused bool) string {
 	return components.Panel("links (enter to copy)", width, height, strings.Join(body, "\n"), focused)
 }
 
-// composeFieldBox renders a single-line bordered box sized to width visible
-// columns. The border uses the faint panel color and the text is dim.
+// composeFieldBox renders a bordered box sized to width visible columns,
+// wrapping text onto additional lines. The border uses the faint panel color
+// and the text is dim.
 func composeFieldBox(width, height int, text string, focused bool) string {
 	borderStyle := style.ColorFaint
 	if focused {
 		borderStyle = style.ColorAccent
 	}
+
+	// The border consumes 2 columns; wrap so long lines flow onto additional
+	// lines instead of overflowing the box.
+	text = lipgloss.Wrap(text, width-2, " ")
 
 	return lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder()).
@@ -316,7 +326,7 @@ func isValidEmail(s string) bool {
 // buildTelegramMessage formats the message, truncating the body so the final
 // text stays under Telegram's limit with margin.
 func buildTelegramMessage(fields [3]string) string {
-	header := "New contact\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
+	header := "New contact message\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
 	message := fields[messageField]
 	return header + message
 }
