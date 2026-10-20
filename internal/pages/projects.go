@@ -31,12 +31,12 @@ type Project struct {
 var projects = []Project{
 	{
 		Name:        "tui-portfolio",
-		Title:       "TUI Portfolio",
+		Title:       "Terminal UI Portfolio",
 		StartTime:   "Oct 2026",
 		EndTime:     "Now",
-		Description: "A terminal portfolio built in Go.",
+		Description: "A terminal portfolio built in Go and Bubble Tea.",
 		Highlights:  []string{"Host a secured SSH server locally."},
-		Stack:       []string{"Go", "Bubble Tea", "Lip Gloss"},
+		Stack:       []string{"Go", "Bubble Tea", "Lip Gloss", "Linux", "SSH server"},
 		Source:      "https://github.com/triluu03/tui-portfolio",
 	},
 	{
@@ -45,9 +45,21 @@ var projects = []Project{
 		StartTime:   "May 2026",
 		EndTime:     "Sep 2026",
 		Description: "A personal finance tracking app based on event-sourcing.",
-		Highlights:  []string{"Built a robust event-sourcing architecture.", "Integrated to Claude/Codex with a MCP server.", "Implemented real-time expenses tracking."},
-		Stack:       []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
-		Source:      "https://github.com/triluu03/pennysheet",
+		Highlights: []string{
+			"Designed and built Pennysheet, a full-stack personal finance app that" + "\n" +
+				"syncs bank transactions via the Enable Banking open-banking API.",
+			"Implemented an event-sourced backend in Rust (Axum) with an append-only" + "\n" +
+				"event table in PostgreSQL and projections for read models, ensuring" + "\n" +
+				"the full transaction and budget history's tracibility.",
+			"Built a Model Context Protocol (MCP) server that gives AI assistants" + "\n" +
+				"read-only access to the projections containing personal financial data," + "\n" +
+				"allowing users to analyze personal finances in natural language.",
+			"Automated daily bank synchronization and Telegram notifications with" + "\n" +
+				"background jobs at 8:30 every morning, giving an overview of current" + "\n" +
+				"personal budgets without opening the app.",
+		},
+		Stack:  []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
+		Source: "https://github.com/triluu03/pennysheet",
 	},
 	{
 		Name:        "sf-cli",
@@ -145,6 +157,7 @@ func projectDetailBody(p Project, focused bool) string {
 	lines = append(lines,
 		"",
 		dimStyle.Render(p.Title),
+		"",
 		strings.Join(tags, " "),
 		"",
 		p.Description,
@@ -152,7 +165,13 @@ func projectDetailBody(p Project, focused bool) string {
 		warmStyle.Render("## Highlights"),
 	)
 	for _, h := range p.Highlights {
-		lines = append(lines, accentStyle.Render("- ")+h)
+		for i, part := range strings.Split(h, "\n") {
+			if i == 0 {
+				lines = append(lines, accentStyle.Render("- ")+part)
+			} else {
+				lines = append(lines, "  "+part)
+			}
+		}
 	}
 
 	lines = append(lines, "")
