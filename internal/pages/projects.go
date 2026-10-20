@@ -46,17 +46,17 @@ var projects = []Project{
 		EndTime:     "Sep 2026",
 		Description: "A personal finance tracking app based on event-sourcing.",
 		Highlights: []string{
-			"Designed and built Pennysheet, a full-stack personal finance app that" + "\n" +
+			"Designed and built {{Pennysheet}}, a full-stack personal finance app that" + "\n" +
 				"syncs bank transactions via the Enable Banking open-banking API.",
-			"Implemented an event-sourced backend in Rust (Axum) with an append-only" + "\n" +
-				"event table in PostgreSQL and projections for read models, ensuring" + "\n" +
+			"Implemented an {{event-sourced backend in Rust (Axum)}} with an {{append-only}}" + "\n" +
+				"event table in {{PostgreSQL}} and projections for read models, ensuring" + "\n" +
 				"the full transaction and budget history's tracibility.",
-			"Built a Model Context Protocol (MCP) server that gives AI assistants" + "\n" +
-				"read-only access to the projections containing personal financial data," + "\n" +
+			"Built a {{Model Context Protocol (MCP)}} server that gives AI assistants" + "\n" +
+				"{{read-only access}} to the projections containing personal financial data," + "\n" +
 				"allowing users to analyze personal finances in natural language.",
-			"Automated daily bank synchronization and Telegram notifications with" + "\n" +
+			"Automated {{daily bank synchronization}} and Telegram notifications with" + "\n" +
 				"background jobs at 8:30 every morning, giving an overview of current" + "\n" +
-				"personal budgets without opening the app.",
+				"personal budgets {{without opening the app.}}",
 		},
 		Stack:  []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
 		Source: "https://github.com/triluu03/pennysheet",
@@ -167,9 +167,9 @@ func projectDetailBody(p Project, focused bool) string {
 	for _, h := range p.Highlights {
 		for i, part := range strings.Split(h, "\n") {
 			if i == 0 {
-				lines = append(lines, accentStyle.Render("- ")+part)
+				lines = append(lines, accentStyle.Render("- ")+renderEmphasis(part))
 			} else {
-				lines = append(lines, "  "+part)
+				lines = append(lines, "  "+renderEmphasis(part))
 			}
 		}
 	}
