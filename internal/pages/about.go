@@ -46,7 +46,7 @@ var sysInfoRows = [][2]string{
 	{"based", "Espoo, Finland"},
 	{"from", "Hanoi, Vietnam"},
 	{"timezone", "GMT+3"},
-	{"building", "a technical stuff"},
+	{"building", "a technical project"},
 	{"reading", "an intriguing book"},
 	{"watching", "a marvelous movie"},
 }

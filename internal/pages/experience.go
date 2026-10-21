@@ -40,7 +40,8 @@ var experienceRecords = []ExperienceRecord{
 		EndTime:        "Now",
 		Description:    "Main developer of three high-stake customer-facing modules.",
 		Highlights:     []string{"Performance Recommendations", "Media Optimizer", "MTA"},
-		Skills:         []string{"Python", "Polars", "TypeScript", "VueJS"},
+		Skills:         []string{"Python", "Polars", "TypeScript", "VueJS", "Airflow", "AWS services"},
+		RelatedLink:    "https://sellforte.com",
 	},
 	{
 		CompanyNameArt: "Sellforte",
@@ -50,8 +51,22 @@ var experienceRecords = []ExperienceRecord{
 		StartTime:      "Aug 2024",
 		EndTime:        "Jul 2026",
 		Description:    "Main developer of the Media Optimizer module.",
-		Highlights:     []string{"", ""},
-		Skills:         []string{"Python", "Polars", "JavaScript", "VueJS"},
+		Highlights: []string{
+			"Designed and built the {{media optimization module}}, a production" + "\n" +
+				"service that provides {{real-time}} optimal investment allocations" + "\n" +
+				"across sales channels for {{30+ customers}}, supporting marketing" + "\n" +
+				"budget planning and execution.",
+			"Improved the optimization runtime performance by {{20%}} by migrating" + "\n" +
+				"the data-processing codebase from {{Pandas to Polars}}.",
+			"Built and maintained data integration and processing pipelines" + "\n" +
+				"for multiple ad platforms, including Google Ads, Facebook Ads," + "\n" +
+				"and Pinterest Ads, improving the quality and reliability of" + "\n" +
+				"the analytics solutions.",
+			"Onboarded {{15+ customers}} and ensured reliable {{daily delivery}} of " + "\n" +
+				"analytics results in production",
+		},
+		Skills:      []string{"Python", "Polars", "JavaScript", "VueJS", "Airflow", "AWS services"},
+		RelatedLink: "https://sellforte.com",
 	},
 	{
 		CompanyNameArt: "Sellforte",
@@ -61,8 +76,14 @@ var experienceRecords = []ExperienceRecord{
 		StartTime:      "Jun 2024",
 		EndTime:        "Aug 2024",
 		Description:    "Joined as an intern for the summer.",
-		Highlights:     []string{"Developed data integration and modeling pipelines\nfor company's weather analytics solution used by 7+ customers.", "Onboarded 2 customers to the company's analytics solutions\nand ensured weekly results delivery."},
-		Skills:         []string{"Python", "Pandas", "Matplotlib"},
+		Highlights: []string{
+			"Designed and built data integration and modeling pipelines" + "\n" +
+				"for company's {{weather analytics solution}} used by {{7+ customers}}.",
+			"Onboarded {{2 customers}} to the company's analytics solutions" + "\n" +
+				"and ensured {{weekly results}} delivery.",
+		},
+		Skills:      []string{"Python", "Pandas", "Matplotlib", "Airflow", "AWS services"},
+		RelatedLink: "https://sellforte.com",
 	},
 	{
 		CompanyNameArt: "Uni of Hel",
@@ -73,8 +94,23 @@ var experienceRecords = []ExperienceRecord{
 		EndTime:        "Jun 2026",
 		Description:    "Focused on Machine Learning and Bayesian analytics.",
 		Highlights:     []string{"GPA: 4.77/5.0", "Thesis: Bayesian Experimental Design in Marketing Mix Modeling"},
-		Skills:         []string{"Placeholder 1"},
+		Skills:         []string{"Bayesian analytics", "ML system engineering"},
 		RelatedLink:    "https://helda.helsinki.fi/items/48e5ae2f-8bf0-4c87-b3a2-6f47b34d91bf",
+	},
+	{
+		CompanyNameArt: "Signant Health",
+		CompanyName:    "Signant Health Oy",
+		Position:       "Software Trainee - R&D",
+		Location:       "Helsinki, Finland",
+		StartTime:      "Jan 2023",
+		EndTime:        "Aug 2023",
+		Description:    "Trainee at the R&D department.",
+		Highlights: []string{
+			"Ensured software product quality by implementing automated tests\nusing Python and Robot Framework.",
+			"Updated the company’s cloud services by migrating AWS Lambda\nfunctions to the JavaScript SDK version 3.",
+		},
+		Skills:      []string{"Test Automation", "Python", "Robot Framework"},
+		RelatedLink: "https://signanthealth.com",
 	},
 	{
 		CompanyNameArt: "Uni of Hel",
@@ -85,7 +121,7 @@ var experienceRecords = []ExperienceRecord{
 		EndTime:        "Jun 2024",
 		Description:    "Major: Computer Science and Data Science.",
 		Highlights:     []string{"GPA: 4.93/5.0", "Thesis: Application of Deep Learning in Drug Response Prediction"},
-		Skills:         []string{"Placeholder 1"},
+		Skills:         []string{"Software engineering", "Data analytics"},
 	},
 }
 
@@ -185,9 +221,9 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 	for _, h := range r.Highlights {
 		for i, part := range strings.Split(h, "\n") {
 			if i == 0 {
-				lines = append(lines, accentStyle.Render("- ")+part)
+				lines = append(lines, accentStyle.Render("- ")+renderEmphasis(part))
 			} else {
-				lines = append(lines, "  "+part)
+				lines = append(lines, "  "+renderEmphasis(part))
 			}
 		}
 	}
