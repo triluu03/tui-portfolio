@@ -35,9 +35,16 @@ var projects = []Project{
 		StartTime:   "Oct 2026",
 		EndTime:     "Now",
 		Description: "A terminal portfolio built in Go and Bubble Tea.",
-		Highlights:  []string{"Host a secured SSH server locally."},
-		Stack:       []string{"Go", "Bubble Tea", "Lip Gloss", "Linux", "SSH server"},
-		Source:      "https://github.com/triluu03/tui-portfolio",
+		Highlights: []string{
+			"Built an {{interactive terminal portfolio}} in {{Go}} with {{Bubble Tea}}, which" + "\n" +
+				"anyone can open with a single command (`{{ssh hello@triluu.dev}}`)," + "\n" +
+				"with no installations, browser, or account needed.",
+			"Deployed it as a {{self-hosted service on a Linux server}}, using {{OpenSSH}}" + "\n" +
+				"`{{ForceCommand}}` to launch the app for every connection on a dedicated" + "\n" +
+				"shell-less user.",
+		},
+		Stack:  []string{"Go", "Bubble Tea", "OpenSSH configuration", "Linux server administration"},
+		Source: "https://github.com/triluu03/tui-portfolio",
 	},
 	{
 		Name:        "pennysheet",
@@ -67,8 +74,37 @@ var projects = []Project{
 		StartTime:   "Jun 2026",
 		EndTime:     "Now",
 		Description: "An internal productivity tool for Sellforte data scientists.",
-		Highlights:  []string{"Automatically set up computer environments for data science work.", "Connect and run SQL queries to PostgreSQL databases."},
-		Stack:       []string{"Rust", "Tokio", "PostgreSQL"},
+		Highlights: []string{
+			"Designed and built {{sf-cli}}, an internal command-line tool in {{Rust}}" + "\n" +
+				"that streamlines day-to-day workflows for Sellforte's data scientists.",
+			"Enabled data scientists to {{run pipeline tasks locally}} for any chosen" + "\n" +
+				"customer with a single command, removing manual environment setup and" + "\n" +
+				"speeding up development and debugging.",
+			"Built a terminal client for {{PostgreSQL databases on AWS RDS}}, letting" + "\n" +
+				"users connect and run SQL queries directly from the command line" + "\n" +
+				"without other separate database tooling.",
+		},
+		Stack: []string{"Rust", "Tokio", "PostgreSQL"},
+	},
+	{
+		Name:        "foodmap",
+		Title:       "Foodmap",
+		StartTime:   "Mar 2026",
+		EndTime:     "Apr 2026",
+		Description: "A small map project built with React and SpacetimeDB.",
+		Highlights: []string{
+			"Designed and built {{Foodmap}}, a map-based social platform where users" + "\n" +
+				"share and rate food places, as part of a one-month challenge in which" + "\n" +
+				"a friend and I built the same product using different tech stacks.",
+			"Implemented the full stack with {{React (TypeScript)}} and {{Maplibre}}" + "\n" +
+				"for the interactive map, and {{SpacetimeDB (Rust)}} as a combined" + "\n" +
+				"backend and database.",
+			"Compared my build with the {{Phoenix and Ash (Elixir)}} implementation" + "\n" +
+				"of the same feature set, evaluating the development speed, architecture," + "\n" +
+				"tooling, and operations, and presented the findings in a retrospective.",
+		},
+		Stack:  []string{"Rust", "SpacetimeDB", "TypeScript", "React", "Maplibre GL"},
+		Source: "https://github.com/triluu03/foodmap",
 	},
 }
 
@@ -156,11 +192,10 @@ func projectDetailBody(p Project, focused bool) string {
 	}
 	lines = append(lines,
 		"",
-		dimStyle.Render(p.Title),
+		accentStyle.Render(p.Title),
+		dimStyle.Render(p.Description),
 		"",
 		strings.Join(tags, " "),
-		"",
-		p.Description,
 		"",
 		warmStyle.Render("## Highlights"),
 	)
