@@ -12,7 +12,9 @@ import (
 
 const (
 	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
-	tagline = "Just a normal tech guy."
+	tagline = "Currently doing data science and software development professionally." + "\n" +
+		"Interested in all kinds of technical challenges, from numerical " + "\n" +
+		"optimizations to software engineering and distributed systems."
 	// nameArt is the 5-row block rendering of the literal "[TRI LUU]".
 	// Every line is exactly 49 visible columns wide.
 	nameArt = `█▀▀ █████ ████  █████       █     █   █ █   █ ▀▀█
@@ -25,12 +27,26 @@ const (
 // nameArtLines is nameArt split into its rows, computed once.
 var nameArtLines = strings.Split(nameArt, "\n")
 
+// skillColumn is one column of the ls ./skills grid: a directory-style
+// heading followed by its items.
+type skillColumn struct {
+	title string
+	items []string
+}
+
+// skillColumns is the static skills grid shown below the tagline.
+var skillColumns = []skillColumn{
+	{"languages/", []string{"Python", "Rust", "TypeScript", "Go"}},
+	{"tools/", []string{"Docker", "PostgreSQL", "React", "Vue"}},
+	{"focus/", []string{"data pipelines", "backend services", "reliability"}},
+}
+
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
 var sysInfoRows = [][2]string{
 	{"based", "Espoo, Finland"},
 	{"from", "Hanoi, Vietnam"},
 	{"timezone", "GMT+3"},
-	{"building", "a technical stuff"},
+	{"building", "a technical project"},
 	{"reading", "an intriguing book"},
 	{"watching", "a marvelous movie"},
 }
@@ -53,6 +69,7 @@ var (
 	dimStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
 	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
 	errorStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorRed))
+	textStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorForeground))
 )
 
 // About is the about page.
@@ -103,11 +120,22 @@ func (a About) renderAbout() string {
 // whoamiPanel renders the whoami panel.
 func whoamiPanel(width, height int, focused bool) string {
 	promptLine := accentStyle.Render("$") + dimStyle.Render(" whoami")
+	skillsLine := accentStyle.Render("$") + dimStyle.Render(" ls ./skills")
 	roleLine := warmStyle.Render(role)
-	taglineLine := dimStyle.Render(tagline)
+
+	// Panel borders and padding take 4 columns ("│ " + " │"), mirroring
+	// components.Panel's inner width.
+	innerWidth := width - 4
 
 	body := append([]string{"", promptLine, ""}, nameArtLines...)
-	body = append(body, "", roleLine, taglineLine)
+
+	body = append(body, "", roleLine, "")
+	for taglineLine := range strings.SplitSeq(tagline, "\n") {
+		body = append(body, dimStyle.Render(taglineLine))
+	}
+
+	body = append(body, "", skillsLine, "")
+	body = append(body, skillsGridLines(innerWidth)...)
 
 	return components.Panel("whoami", width, height, strings.Join(body, "\n"), focused)
 }
@@ -135,4 +163,32 @@ func swatchRow(colors []string) string {
 		blocks[i] = lipgloss.NewStyle().Foreground(lipgloss.Color(c)).Render("███")
 	}
 	return strings.Join(blocks, " ")
+}
+
+// skillsGridLines lays the skill columns out side by side: one accent heading
+// row followed by one row per item. Cells are padded to equal widths so the
+// columns line up inside the panel. Column blocks are allowed to be ragged.
+func skillsGridLines(width int) []string {
+	colWidth := width / len(skillColumns)
+	nRows := 1
+	for _, c := range skillColumns {
+		nRows = max(nRows, len(c.items)+1)
+	}
+
+	lines := make([]string, 0, nRows)
+	for row := 0; row < nRows; row++ {
+		cells := make([]string, 0, len(skillColumns))
+		for _, c := range skillColumns {
+			cell := ""
+			switch {
+			case row == 0:
+				cell = accentStyle.Render(c.title)
+			case row-1 < len(c.items):
+				cell = textStyle.Render(c.items[row-1])
+			}
+			cells = append(cells, lipgloss.NewStyle().Width(colWidth).Render(cell))
+		}
+		lines = append(lines, lipgloss.JoinHorizontal(lipgloss.Top, cells...))
+	}
+	return lines
 }

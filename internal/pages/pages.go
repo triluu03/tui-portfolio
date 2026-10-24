@@ -2,6 +2,7 @@ package pages
 
 import (
 	"fmt"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -36,6 +37,37 @@ var Pages = []Descriptor{
 		Path:  "~/portfolio/contact",
 		New:   func(focus, editMode *bool) tea.Model { return Contact{focus: focus, editMode: editMode} },
 	},
+}
+
+// Emphasis delimiters for highlight text: {{word}} renders word in accentStyle.
+const emphOpen, emphClose = "{{", "}}"
+
+// renderEmphasis styles every {{...}} span in s with accentStyle and leaves the
+// surrounding text untouched. An unterminated marker is emitted literally.
+func renderEmphasis(s string) string {
+	if !strings.Contains(s, emphOpen) {
+		return s
+	}
+
+	var b strings.Builder
+	for i, seg := range strings.Split(s, emphOpen) {
+		if i == 0 {
+			b.WriteString(seg)
+			continue
+		}
+
+		emph, rest, ok := strings.Cut(seg, emphClose)
+		if !ok {
+			b.WriteString(emphOpen)
+			b.WriteString(seg)
+			continue
+		}
+
+		b.WriteString(accentStyle.Render(emph))
+		b.WriteString(rest)
+	}
+
+	return b.String()
 }
 
 // hyperlink wraps text in an OSC 8 escape sequence so the user's terminal
