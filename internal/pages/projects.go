@@ -36,12 +36,12 @@ var projects = []Project{
 		EndTime:     "Now",
 		Description: "A terminal portfolio built in Go and Bubble Tea.",
 		Highlights: []string{
-			"Built an {{interactive terminal portfolio}} in {{Go}} with {{Bubble Tea}}, which" + "\n" +
-				"anyone can open with a single command (`{{ssh hello@triluu.dev}}`)," + "\n" +
+			"Built an {{interactive terminal portfolio}} in {{Go}} with {{Bubble Tea}}," + "\n" +
+				"which anyone can open with a single command (`{{ssh hello@triluu.dev}}`)," + "\n" +
 				"with no installations, browser, or account needed.",
-			"Deployed it as a {{self-hosted service on a Linux server}}, using {{OpenSSH}}" + "\n" +
-				"`{{ForceCommand}}` to launch the app for every connection on a dedicated" + "\n" +
-				"shell-less user.",
+			"Deployed it as a {{self-hosted service on a Linux server}}, using" + "\n" +
+				"{{OpenSSH}} `{{ForceCommand}}` to launch the app for every connection" + "\n" +
+				"on a dedicated shell-less user.",
 		},
 		Stack:  []string{"Go", "Bubble Tea", "OpenSSH configuration", "Linux server administration"},
 		Source: "https://github.com/triluu03/tui-portfolio",
@@ -53,17 +53,18 @@ var projects = []Project{
 		EndTime:     "Sep 2026",
 		Description: "A personal finance tracking app based on event-sourcing.",
 		Highlights: []string{
-			"Designed and built {{Pennysheet}}, a full-stack personal finance app that" + "\n" +
-				"syncs bank transactions via the Enable Banking open-banking API.",
-			"Implemented an {{event-sourced backend in Rust (Axum)}} with an {{append-only}}" + "\n" +
-				"event table in {{PostgreSQL}} and projections for read models, ensuring" + "\n" +
-				"the full transaction and budget history's tracibility.",
-			"Built a {{Model Context Protocol (MCP)}} server that gives AI assistants" + "\n" +
-				"{{read-only access}} to the projections containing personal financial data," + "\n" +
-				"allowing users to analyze personal finances in natural language.",
-			"Automated {{daily bank synchronization}} and Telegram notifications with" + "\n" +
-				"background jobs at 8:30 every morning, giving an overview of current" + "\n" +
-				"personal budgets {{without opening the app.}}",
+			"Designed and built {{Pennysheet}}, a full-stack personal finance app" + "\n" +
+				"that syncs bank transactions via the Enable Banking API.",
+			"Implemented an {{event-sourced backend in Rust (Axum)}} with an" + "\n" +
+				"{{append-only}} event table in {{PostgreSQL}} and projections for" + "\n" +
+				"read models, ensuring the full transaction and budget tracibility.",
+			"Built a {{Model Context Protocol (MCP)}} server that gives AI" + "\n" +
+				"assistants {{read-only access}} to the projections containing" + "\n" +
+				"personal financial data, allowing users to analyze personal" + "\n" +
+				"finances in natural language.",
+			"Automated {{daily bank synchronization}} and Telegram notifications" + "\n" +
+				"with background jobs at 8:30 every morning, giving an overview of" + "\n" +
+				"current personal budgets {{without opening the app.}}",
 		},
 		Stack:  []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
 		Source: "https://github.com/triluu03/pennysheet",
@@ -75,14 +76,15 @@ var projects = []Project{
 		EndTime:     "Now",
 		Description: "An internal productivity tool for Sellforte data scientists.",
 		Highlights: []string{
-			"Designed and built {{sf-cli}}, an internal command-line tool in {{Rust}}" + "\n" +
-				"that streamlines day-to-day workflows for Sellforte's data scientists.",
-			"Enabled data scientists to {{run pipeline tasks locally}} for any chosen" + "\n" +
-				"customer with a single command, removing manual environment setup and" + "\n" +
-				"speeding up development and debugging.",
-			"Built a terminal client for {{PostgreSQL databases on AWS RDS}}, letting" + "\n" +
-				"users connect and run SQL queries directly from the command line" + "\n" +
-				"without other separate database tooling.",
+			"Designed and built {{sf-cli}}, an internal command-line tool in" + "\n" +
+				"{{Rust}} that streamlines day-to-day workflows for Sellforte's" + "\n" +
+				"data scientists.",
+			"Enabled data scientists to {{run pipeline tasks locally}} for" + "\n" +
+				"any chosen customer with a single command, removing manual" + "\n" +
+				"environment setup and speeding up development and debugging.",
+			"Built a terminal client for {{PostgreSQL databases on AWS RDS}}," + "\n" +
+				"letting users connect and run SQL queries directly from the" + "\n" +
+				"command line without other separate database tooling.",
 		},
 		Stack: []string{"Rust", "Tokio", "PostgreSQL"},
 	},
@@ -93,15 +95,17 @@ var projects = []Project{
 		EndTime:     "Apr 2026",
 		Description: "A small map project built with React and SpacetimeDB.",
 		Highlights: []string{
-			"Designed and built {{Foodmap}}, a map-based social platform where users" + "\n" +
-				"share and rate food places, as part of a one-month challenge in which" + "\n" +
-				"a friend and I built the same product using different tech stacks.",
+			"Designed and built {{Foodmap}}, a map-based social platform" + "\n" +
+				"where users share and rate food places, as part of a one-month" + "\n" +
+				"challenge in which a friend and I built the same product using" + "\n" +
+				"different tech stacks.",
 			"Implemented the full stack with {{React (TypeScript)}} and {{Maplibre}}" + "\n" +
 				"for the interactive map, and {{SpacetimeDB (Rust)}} as a combined" + "\n" +
 				"backend and database.",
 			"Compared my build with the {{Phoenix and Ash (Elixir)}} implementation" + "\n" +
-				"of the same feature set, evaluating the development speed, architecture," + "\n" +
-				"tooling, and operations, and presented the findings in a retrospective.",
+				"of the same feature set, evaluating the development speed," + "\n" +
+				"architecture, tooling, and operations, and presented the" + "\n" +
+				"findings in a retrospective.",
 		},
 		Stack:  []string{"Rust", "SpacetimeDB", "TypeScript", "React", "Maplibre GL"},
 		Source: "https://github.com/triluu03/foodmap",
