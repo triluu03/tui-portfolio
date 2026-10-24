@@ -39,9 +39,21 @@ var experienceRecords = []ExperienceRecord{
 		StartTime:      "Jul 2026",
 		EndTime:        "Now",
 		Description:    "Main developer of three high-stake customer-facing modules.",
-		Highlights:     []string{"Performance Recommendations", "Media Optimizer", "MTA"},
-		Skills:         []string{"Python", "Polars", "TypeScript", "VueJS", "Airflow", "AWS services"},
-		RelatedLink:    "https://sellforte.com",
+		Highlights: []string{
+			"Primary developer of the {{Performance module}}, used daily by {{all}} " + "\n" +
+				"{{digital marketing customers (40+)}}. It reports historical campaign" + "\n" +
+				"and ad-group performance, generates daily bidding parameter" + "\n" +
+				"recommendations, and analyzes the impact of previously made" + "\n" +
+				"changes.",
+			"Continue to develop and maintain the media optimization module" + "\n" +
+				"which has become the {{backbone of other services}} provided by" + "\n" +
+				"the company like {{Home or Sellforte AI.}}",
+			"Own the {{Pixel and MTA analytics solutions}}, including design and" + "\n" +
+				"implementation of the ingesting pipeline and attribution module" + "\n" +
+				"that delivers results to customers.",
+		},
+		Skills:      []string{"Python", "Polars", "TypeScript", "VueJS", "Airflow", "AWS services"},
+		RelatedLink: "https://demo.sellforte.com/",
 	},
 	{
 		CompanyNameArt: "Sellforte",
