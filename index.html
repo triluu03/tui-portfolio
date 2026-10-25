@@ -98,6 +98,7 @@
       const command = "ssh triluu.dev";
       const button = document.getElementById("copy-button");
       const hint = document.getElementById("hint");
+      let hintTimeout;
 
       button.addEventListener("click", async () => {
         try {
@@ -106,6 +107,10 @@
         } catch {
           hint.textContent = "Copy failed. Select the text and copy manually.";
         }
+        clearTimeout(hintTimeout);
+        hintTimeout = setTimeout(() => {
+          hint.textContent = "";
+        }, 3000);
       });
     </script>
   </body>
