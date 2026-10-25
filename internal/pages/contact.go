@@ -42,20 +42,16 @@ var contactLinks = []contactLink{
 
 var nContactLinks = len(contactLinks)
 
-const nEditingFields = 3
+const nEditingFields = 2
 
-// Compose field indices for [3]string{"name", "email", "message"}.
+// Compose field indices for [2]string{"email", "message"}.
 const (
-	nameField = iota
-	emailField
+	emailField = iota
 	messageField
 )
 
 const (
-	// maxNameRunes and maxEmailRunes bound the untrusted compose fields.
-	// The values are meant to ensure that these two fields are always
-	// rendered within one line.
-	maxNameRunes  = style.ContactComposeWidth - 4
+	// maxEmailRunes bounds the untrusted email field so it stays within one line.
 	maxEmailRunes = style.ContactComposeWidth - 4
 
 	statusSent = "sent"
@@ -70,8 +66,8 @@ type Contact struct {
 
 	editingField int
 
-	// composeFields are: "name", "email", and "message" (in this order)
-	composeFields [3]string
+	// composeFields are: "email" and "message" (in this order)
+	composeFields [2]string
 
 	// sending is true while an async Telegram send is in flight.
 	sending bool
@@ -91,7 +87,7 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return c, nil
 		}
 		c.status = statusSent
-		c.composeFields = [3]string{"", "", ""}
+		c.composeFields = [2]string{"", ""}
 		c.editingField = 0
 		*c.editMode = false
 		return c, nil
@@ -184,7 +180,7 @@ func contactComposePanel(width, height int, c Contact) string {
 	promptLine := accentStyle.Render("$ mail " + recipientEmail)
 
 	body := []string{"", promptLine, ""}
-	for i, fieldName := range [3]string{"name", "email", "message"} {
+	for i, fieldName := range [2]string{"email", "message"} {
 		cursor, fieldStyle, focus := "", dimStyle, false
 		if *c.editMode && i == c.editingField {
 			fieldStyle = accentStyle
@@ -194,7 +190,7 @@ func contactComposePanel(width, height int, c Contact) string {
 
 		innerHeight := 1
 		if fieldName == "message" {
-			innerHeight = 11
+			innerHeight = 16
 		}
 
 		body = append(body,
@@ -292,19 +288,15 @@ type SendResultMsg struct {
 
 // validateComposeFields trims and validates untrusted compose input and
 // returns the trimmed fields so the UI reflects what will be sent.
-func validateComposeFields(fields [3]string) ([3]string, error) {
+func validateComposeFields(fields [2]string) ([2]string, error) {
 	for i := range fields {
 		fields[i] = strings.TrimSpace(fields[i])
 	}
 	switch {
-	case fields[nameField] == "":
-		return fields, fmt.Errorf("name is required")
 	case fields[emailField] == "":
 		return fields, fmt.Errorf("email is required")
 	case fields[messageField] == "":
 		return fields, fmt.Errorf("message is required")
-	case len([]rune(fields[nameField])) > maxNameRunes:
-		return fields, fmt.Errorf("name is too long")
 	case len([]rune(fields[emailField])) > maxEmailRunes:
 		return fields, fmt.Errorf("email is too long")
 	case !isValidEmail(fields[emailField]):
@@ -325,8 +317,8 @@ func isValidEmail(s string) bool {
 
 // buildTelegramMessage formats the message, truncating the body so the final
 // text stays under Telegram's limit with margin.
-func buildTelegramMessage(fields [3]string) string {
-	header := "New contact message\n\nName: " + fields[nameField] + "\nEmail: " + fields[emailField] + "\n\n"
+func buildTelegramMessage(fields [2]string) string {
+	header := "New contact message\n\nEmail: " + fields[emailField] + "\n\n"
 	message := fields[messageField]
 	return header + message
 }
