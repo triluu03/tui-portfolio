@@ -10,7 +10,9 @@ ssh triluu.dev
 
 ## Running locally
 
-Install Go to your system: https://go.dev/doc/install and run:
+- Install Go to your system: https://go.dev/doc/install
+- Change the `port` in `main.go` to a different one from `22`
+- Run:
 
 ```sh
 go run .
