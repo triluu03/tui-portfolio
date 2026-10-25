@@ -11,6 +11,7 @@ require (
 	github.com/charmbracelet/x/ansi v0.11.8
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/mymmrac/telego v1.12.1
+	golang.org/x/time v0.16.0
 )
 
 require (
@@ -33,6 +34,7 @@ require (
 	github.com/creack/pty v1.1.24 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/grbit/go-json v0.11.0 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/klauspost/compress v1.19.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect

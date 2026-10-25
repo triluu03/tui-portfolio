@@ -16,13 +16,15 @@ import (
 	"charm.land/wish/v2/activeterm"
 	"charm.land/wish/v2/bubbletea"
 	"charm.land/wish/v2/logging"
+	"charm.land/wish/v2/ratelimiter"
+	"golang.org/x/time/rate"
 
 	"github.com/triluu03/tui-portfolio/internal/app"
 )
 
 const (
 	host = "0.0.0.0"
-	port = "23234"
+	port = "22"
 )
 
 func main() {
@@ -30,10 +32,16 @@ func main() {
 		wish.WithAddress(net.JoinHostPort(host, port)),
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		wish.WithMiddleware(
+			ratelimiter.Middleware(ratelimiter.NewRateLimiter(
+				rate.Every(5*time.Second), // 5 conn/sec per IP
+				3,                         // burst of 3
+				1000,                      // max distinct IPs cached
+			)),
 			bubbletea.Middleware(teaHandler),
 			activeterm.Middleware(),
 			logging.Middleware(),
 		),
+		wish.WithIdleTimeout(10*time.Minute),
 	)
 
 	if err != nil {
