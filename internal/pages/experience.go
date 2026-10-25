@@ -215,7 +215,7 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 		tags[i] = accentStyle.Render("[" + s + "]")
 	}
 	lines := []string{""}
-	for _, row := range figure.NewFigure(r.CompanyNameArt, "rectangles", true).Slicify() {
+	for _, row := range figure.NewFigure(r.CompanyNameArt, "thin", true).Slicify() {
 		lines = append(lines, warmStyle.Render(row))
 	}
 	lines = append(lines,

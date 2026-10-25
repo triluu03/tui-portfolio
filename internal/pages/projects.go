@@ -191,7 +191,7 @@ func projectDetailBody(p Project, focused bool) string {
 		tags[i] = accentStyle.Render("[" + s + "]")
 	}
 	lines := []string{""}
-	for _, row := range figure.NewFigure(p.Name, "rectangles", true).Slicify() {
+	for _, row := range figure.NewFigure(p.Name, "thin", true).Slicify() {
 		lines = append(lines, warmStyle.Render(row))
 	}
 	lines = append(lines,
