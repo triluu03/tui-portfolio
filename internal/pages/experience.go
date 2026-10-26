@@ -46,12 +46,12 @@ var experienceRecords = []ExperienceRecord{
 				"recommendations, and analyzes the impact of previously made changes.",
 			"Continues to develop and maintain the Media Optimizer product," + "\n" +
 				"which has become the {{backbone of other services}} provided by" + "\n" +
-				"the company like {{Home}} or {{Sellforte AI}}.",
+				"the company, such as {{Home}} or {{Sellforte AI}}.",
 			"Owns the {{Pixel and MTA analytics solutions}}, including design and" + "\n" +
 				"implementation of the ingestion pipeline and attribution module" + "\n" +
 				"that delivers analyzed results daily to customers.",
 		},
-		Skills:      []string{"Python", "Polars", "TypeScript", "VueJS", "Airflow", "AWS services"},
+		Skills:      []string{"Python", "Polars", "TypeScript", "Vue.js", "Airflow", "AWS services"},
 		RelatedLink: "https://demo.sellforte.com/",
 	},
 	{
@@ -111,7 +111,7 @@ var experienceRecords = []ExperienceRecord{
 	{
 		CompanyNameArt: "Signant Health",
 		CompanyName:    "Signant Health Oy",
-		Position:       "Software Trainee - R&D",
+		Position:       "Software Trainee, R&D",
 		Location:       "Helsinki, Finland",
 		StartTime:      "Jan 2023",
 		EndTime:        "Aug 2023",

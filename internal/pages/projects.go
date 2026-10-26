@@ -59,10 +59,11 @@ var projects = []Project{
 				"that syncs bank transactions via the Enable Banking API.",
 			"Implemented an {{event-sourced backend in Rust (Axum)}} with an" + "\n" +
 				"{{append-only}} event table in {{PostgreSQL}} and projections for" + "\n" +
-				"read models, ensuring the full transaction and budget traceability.",
+				"read models, ensuring the full traceability of all transactions" + "\n" +
+				"and budgets recorded.",
 			"Built a {{Model Context Protocol (MCP)}} server that gives AI" + "\n" +
 				"assistants {{read-only access}} to the projections containing" + "\n" +
-				"personal financial data, allowing users to analyze personal" + "\n" +
+				"personal financial data, allowing users to analyze their" + "\n" +
 				"finances in natural language.",
 			"Automated {{daily bank synchronization}} and Telegram notifications" + "\n" +
 				"with background jobs at 8:30 every morning, giving an overview of" + "\n" +
@@ -101,7 +102,7 @@ var projects = []Project{
 				"where users share and rate food places, as part of a one-month" + "\n" +
 				"challenge in which a friend and I built the same product using" + "\n" +
 				"different tech stacks.",
-			"Implemented the full stack with {{React (TypeScript)}} and {{Maplibre}}" + "\n" +
+			"Implemented the full stack with {{React (TypeScript)}} and {{MapLibre}}" + "\n" +
 				"for the interactive map, and {{SpacetimeDB (Rust)}} as a combined" + "\n" +
 				"backend and database.",
 			"Compared my build with the {{Phoenix and Ash (Elixir)}} implementation" + "\n" +

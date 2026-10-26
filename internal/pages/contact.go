@@ -334,7 +334,7 @@ func sendTelegramMessage(text string) error {
 	}
 	id, err := strconv.ParseInt(chatID, 10, 64)
 	if err != nil {
-		return fmt.Errorf("send not configured: TELEGRAM_CHAT_ID must be a numeric chat id")
+		return fmt.Errorf("send not configured: TELEGRAM_CHAT_ID must be a numeric chat ID")
 	}
 
 	bot, err := telego.NewBot(token, telego.WithDiscardLogger())
