@@ -203,7 +203,7 @@ func contactComposePanel(width, height int, c Contact) string {
 			"",
 		)
 	}
-	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter to send"))
+	body = append(body, accentStyle.Render("[ send ⏎ ]")+" "+dimStyle.Render("ctrl+enter or alt+enter to send"))
 
 	if c.sending {
 		body = append(body, dimStyle.Render("sending..."))
