@@ -37,7 +37,7 @@ var contactLinks = []contactLink{
 	{label: "email", value: "ductriluu.work@gmail.com", url: "mailto:ductriluu.work@gmail.com"},
 	{label: "github", value: "triluu03", url: "https://github.com/triluu03"},
 	{label: "linkedin", value: "triluu03", url: "https://linkedin.com/in/triluu03"},
-	{label: "cv", value: "cv.pdf", url: "cv.pdf"},
+	{label: "cv", value: "cv.pdf", url: "https://www.triluu.dev/files/cv.pdf"},
 }
 
 var nContactLinks = len(contactLinks)
