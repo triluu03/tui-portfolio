@@ -38,19 +38,18 @@ var experienceRecords = []ExperienceRecord{
 		Location:       "Espoo, Finland",
 		StartTime:      "Jul 2026",
 		EndTime:        "Now",
-		Description:    "Main developer of three high-stake customer-facing modules.",
+		Description:    "Main developer of three high-stakes customer-facing products.",
 		Highlights: []string{
-			"Primary developer of the {{Performance module}}, used daily by {{all}} " + "\n" +
-				"{{digital marketing customers (40+)}}. It reports historical campaign" + "\n" +
+			"Primary developer of the {{Performance product}}, used daily by {{all}} " + "\n" +
+				"{{digital marketing customers (40+)}}, that reports historical campaign" + "\n" +
 				"and ad-group performance, generates daily bidding parameter" + "\n" +
-				"recommendations, and analyzes the impact of previously made" + "\n" +
-				"changes.",
-			"Continue to develop and maintain the media optimization module" + "\n" +
+				"recommendations, and analyzes the impact of previously made changes.",
+			"Continues to develop and maintain the Media Optimizer product," + "\n" +
 				"which has become the {{backbone of other services}} provided by" + "\n" +
-				"the company like {{Home or Sellforte AI.}}",
-			"Own the {{Pixel and MTA analytics solutions}}, including design and" + "\n" +
-				"implementation of the ingesting pipeline and attribution module" + "\n" +
-				"that delivers results to customers.",
+				"the company like {{Home}} or {{Sellforte AI}}.",
+			"Owns the {{Pixel and MTA analytics solutions}}, including design and" + "\n" +
+				"implementation of the ingestion pipeline and attribution module" + "\n" +
+				"that delivers analyzed results daily to customers.",
 		},
 		Skills:      []string{"Python", "Polars", "TypeScript", "VueJS", "Airflow", "AWS services"},
 		RelatedLink: "https://demo.sellforte.com/",
@@ -62,20 +61,20 @@ var experienceRecords = []ExperienceRecord{
 		Location:       "Espoo, Finland",
 		StartTime:      "Aug 2024",
 		EndTime:        "Jul 2026",
-		Description:    "Main developer of the Media Optimizer module.",
+		Description:    "Main developer of the Media Optimizer product.",
 		Highlights: []string{
 			"Designed and built the {{media optimization module}}, a production" + "\n" +
 				"service that provides {{real-time}} optimal investment allocations" + "\n" +
 				"across sales channels for {{30+ customers}}, supporting marketing" + "\n" +
 				"budget planning and execution.",
-			"Improved the optimization runtime performance by {{20%}} by migrating" + "\n" +
-				"the data-processing codebase from {{Pandas to Polars}}.",
+			"Improved the optimization runtime performance {{by 20%}} through" + "\n" +
+				"migrating the data-processing codebase from {{Pandas to Polars}}.",
 			"Built and maintained data integration and processing pipelines" + "\n" +
-				"for multiple ad platforms, including Google Ads, Facebook Ads," + "\n" +
-				"and Pinterest Ads, improving the quality and reliability of" + "\n" +
+				"for multiple ad platforms, including {{Google Ads, Facebook Ads,}}" + "\n" +
+				"{{and Pinterest Ads}}, improving the quality and reliability of" + "\n" +
 				"the analytics solutions.",
 			"Onboarded {{15+ customers}} and ensured reliable {{daily delivery}} of " + "\n" +
-				"analytics results in production",
+				"analytics results in production.",
 		},
 		Skills:      []string{"Python", "Polars", "JavaScript", "VueJS", "Airflow", "AWS services"},
 		RelatedLink: "https://sellforte.com",
@@ -90,7 +89,7 @@ var experienceRecords = []ExperienceRecord{
 		Description:    "Joined as an intern for the summer.",
 		Highlights: []string{
 			"Designed and built data integration and modeling pipelines" + "\n" +
-				"for company's {{weather analytics solution}} used by {{7+ customers}}.",
+				"for the company's {{weather analytics solution}} used by {{7+ customers}}.",
 			"Onboarded {{2 customers}} to the company's analytics solutions" + "\n" +
 				"and ensured {{weekly results}} delivery.",
 		},
@@ -116,10 +115,12 @@ var experienceRecords = []ExperienceRecord{
 		Location:       "Helsinki, Finland",
 		StartTime:      "Jan 2023",
 		EndTime:        "Aug 2023",
-		Description:    "Trainee at the R&D department.",
+		Description:    "Trainee in the R&D department.",
 		Highlights: []string{
-			"Ensured software product quality by implementing automated tests\nusing Python and Robot Framework.",
-			"Updated the company’s cloud services by migrating AWS Lambda\nfunctions to the JavaScript SDK version 3.",
+			"Ensured software product quality by implementing automated tests" + "\n" +
+				"using {{Python and Robot Framework}}.",
+			"Updated the company's cloud services by migrating AWS Lambda" + "\n" +
+				"functions to the {{JavaScript SDK version 3}}.",
 		},
 		Skills:      []string{"Test Automation", "Python", "Robot Framework"},
 		RelatedLink: "https://signanthealth.com",

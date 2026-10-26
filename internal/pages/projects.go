@@ -32,16 +32,18 @@ var projects = []Project{
 	{
 		Name:        "tui-portfolio",
 		Title:       "Terminal UI Portfolio",
-		StartTime:   "Oct 2026",
-		EndTime:     "Now",
+		StartTime:   "Sep 2026",
+		EndTime:     "Oct 2026",
 		Description: "A terminal portfolio built in Go and Bubble Tea.",
 		Highlights: []string{
 			"Built an {{interactive terminal portfolio}} in {{Go}} with {{Bubble Tea}}," + "\n" +
-				"which anyone can open with a single command (`{{ssh hello@triluu.dev}}`)," + "\n" +
-				"with no installations, browser, or account needed.",
-			"Deployed it as a {{self-hosted service on a Linux server}}, using" + "\n" +
-				"{{OpenSSH}} `{{ForceCommand}}` to launch the app for every connection" + "\n" +
-				"on a dedicated shell-less user.",
+				"which anyone can access with a single command ({{ssh triluu.dev}})," + "\n" +
+				"with no installation, browser, or account needed.",
+			"Deployed it as a {{self-hosted service on a Linux server}} exposed" + "\n" +
+				"via the standard {{SSH port 22}} and a custom domain, with the" + "\n" +
+				"administrative OpenSSH moved to a separate port.",
+			"Guarded the public-facing service with {{rate limiting}}, {{session}}" + "\n" +
+				"{{timeouts}}, and a systemd unit running under a restricted user.",
 		},
 		Stack:  []string{"Go", "Bubble Tea", "OpenSSH configuration", "Linux server administration"},
 		Source: "https://github.com/triluu03/tui-portfolio",
@@ -57,14 +59,14 @@ var projects = []Project{
 				"that syncs bank transactions via the Enable Banking API.",
 			"Implemented an {{event-sourced backend in Rust (Axum)}} with an" + "\n" +
 				"{{append-only}} event table in {{PostgreSQL}} and projections for" + "\n" +
-				"read models, ensuring the full transaction and budget tracibility.",
+				"read models, ensuring the full transaction and budget traceability.",
 			"Built a {{Model Context Protocol (MCP)}} server that gives AI" + "\n" +
 				"assistants {{read-only access}} to the projections containing" + "\n" +
 				"personal financial data, allowing users to analyze personal" + "\n" +
 				"finances in natural language.",
 			"Automated {{daily bank synchronization}} and Telegram notifications" + "\n" +
 				"with background jobs at 8:30 every morning, giving an overview of" + "\n" +
-				"current personal budgets {{without opening the app.}}",
+				"current personal budgets {{without opening the app}}.",
 		},
 		Stack:  []string{"Rust", "Axum", "TypeScript", "React", "REST API", "MCP", "PostgreSQL"},
 		Source: "https://github.com/triluu03/pennysheet",
@@ -78,13 +80,13 @@ var projects = []Project{
 		Highlights: []string{
 			"Designed and built {{sf-cli}}, an internal command-line tool in" + "\n" +
 				"{{Rust}} that streamlines day-to-day workflows for Sellforte's" + "\n" +
-				"data scientists.",
+				"team of {{21 data scientists}}.",
 			"Enabled data scientists to {{run pipeline tasks locally}} for" + "\n" +
 				"any chosen customer with a single command, removing manual" + "\n" +
 				"environment setup and speeding up development and debugging.",
 			"Built a terminal client for {{PostgreSQL databases on AWS RDS}}," + "\n" +
 				"letting users connect and run SQL queries directly from the" + "\n" +
-				"command line without other separate database tooling.",
+				"command line without separate database tooling.",
 		},
 		Stack: []string{"Rust", "Tokio", "PostgreSQL"},
 	},
@@ -93,7 +95,7 @@ var projects = []Project{
 		Title:       "Foodmap",
 		StartTime:   "Mar 2026",
 		EndTime:     "Apr 2026",
-		Description: "A small map project built with React and SpacetimeDB.",
+		Description: "A map project built with React and SpacetimeDB.",
 		Highlights: []string{
 			"Designed and built {{Foodmap}}, a map-based social platform" + "\n" +
 				"where users share and rate food places, as part of a one-month" + "\n" +
@@ -104,8 +106,7 @@ var projects = []Project{
 				"backend and database.",
 			"Compared my build with the {{Phoenix and Ash (Elixir)}} implementation" + "\n" +
 				"of the same feature set, evaluating the development speed," + "\n" +
-				"architecture, tooling, and operations, and presented the" + "\n" +
-				"findings in a retrospective.",
+				"architecture, tooling, and operations.",
 		},
 		Stack:  []string{"Rust", "SpacetimeDB", "TypeScript", "React", "Maplibre GL"},
 		Source: "https://github.com/triluu03/foodmap",

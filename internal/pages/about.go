@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	role    = "Senior Data Scientist @ Sellfote Solutions Oy"
+	role    = "Senior Data Scientist @ Sellforte Solutions Oy"
 	tagline = "Currently doing data science and software development professionally." + "\n" +
 		"Interested in all kinds of technical challenges, from numerical " + "\n" +
-		"optimizations to software engineering and distributed systems."
+		"optimization to software engineering and distributed systems."
 	// nameArt is the 5-row block rendering of the literal "[TRI LUU]".
 	// Every line is exactly 49 visible columns wide.
 	nameArt = `█▀▀ █████ ████  █████       █     █   █ █   █ ▀▀█
@@ -38,7 +38,7 @@ type skillColumn struct {
 var skillColumns = []skillColumn{
 	{"languages/", []string{"Python", "Rust", "TypeScript", "Go"}},
 	{"tools/", []string{"Docker", "PostgreSQL", "React", "Vue"}},
-	{"focus/", []string{"data pipelines", "backend services", "reliability"}},
+	{"focus/", []string{"data pipelines", "backend services", "system design", "developer tooling"}},
 }
 
 // sysInfoRows are the key/value rows shown in the sysinfo panel.
