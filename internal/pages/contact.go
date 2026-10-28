@@ -34,10 +34,10 @@ type contactLink struct {
 // contactLinks is the seed data. Entries are rendered in order; the url is
 // reserved for a future interactive pass and is not rendered yet.
 var contactLinks = []contactLink{
-	{label: "email", value: "ductriluu.work@gmail.com", url: "mailto:ductriluu.work@gmail.com"},
-	{label: "github", value: "triluu03", url: "https://github.com/triluu03"},
-	{label: "linkedin", value: "triluu03", url: "https://linkedin.com/in/triluu03"},
-	{label: "cv", value: "cv.pdf", url: "https://www.triluu.dev/files/cv.pdf"},
+	{label: "email", value: "ductriluu.work@gmail.com", url: "ductriluu.work@gmail.com"},
+	{label: "github", value: "github.com/triluu03", url: "github.com/triluu03"},
+	{label: "linkedin", value: "linkedin.com/in/triluu03", url: "linkedin.com/in/triluu03"},
+	{label: "cv", value: "www.triluu.dev/files/cv.pdf", url: "www.triluu.dev/files/cv.pdf"},
 }
 
 var nContactLinks = len(contactLinks)
