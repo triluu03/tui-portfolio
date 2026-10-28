@@ -144,6 +144,7 @@ var nExperienceRecords = len(experienceRecords)
 type Experience struct {
 	selected int
 	focus    *bool
+	copied   bool
 }
 
 // Init is a no-op placeholder.
@@ -151,12 +152,18 @@ func (e Experience) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if _, ok := msg.(copyFeedbackMsg); ok {
+		e.copied = false
+		return e, nil
+	}
+
 	key, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return e, nil
 	}
 
 	if e.focus == nil || !*e.focus {
+		e.copied = false
 		switch key.String() {
 		case "up", "k":
 			e.selected = (e.selected + nExperienceRecords - 1) % nExperienceRecords
@@ -168,7 +175,8 @@ func (e Experience) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if *e.focus {
 		switch key.String() {
 		case "enter":
-			return e, tea.SetClipboard(experienceRecords[e.selected].RelatedLink)
+			e.copied = true
+			return e, copyCmd(experienceRecords[e.selected].RelatedLink)
 		}
 	}
 
@@ -183,7 +191,7 @@ func (e Experience) renderExperience() string {
 	selectedRecord := experienceRecords[e.selected]
 
 	experienceList := experienceListPanel(e.selected, !*e.focus)
-	experienceDetail := experienceDetailPanel(selectedRecord, *e.focus)
+	experienceDetail := experienceDetailPanel(selectedRecord, *e.focus, e.copied)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -210,7 +218,7 @@ func experienceListPanel(selected int, focused bool) string {
 }
 
 // experienceDetailPanel renders the README-style detail panel for one record.
-func experienceDetailPanel(r ExperienceRecord, focused bool) string {
+func experienceDetailPanel(r ExperienceRecord, focused bool, copied bool) string {
 	tags := make([]string, len(r.Skills))
 	for i, s := range r.Skills {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -246,10 +254,14 @@ func experienceDetailPanel(r ExperienceRecord, focused bool) string {
 		if focused {
 			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
 			linkWidth := innerWidth - lipgloss.Width("→ related: ") - lipgloss.Width(" (enter to copy link ↗)")
+			hint, hintStyle := " (enter to copy link ↗)", accentStyle
+			if copied {
+				hint, hintStyle = " (copied ✓)", successStyle
+			}
 			lines = append(lines,
 				accentStyle.Render("→ related: ")+
 					hyperlink(r.RelatedLink, accentStyle.Render(ansi.Truncate(r.RelatedLink, linkWidth, "…")))+
-					accentStyle.Render(" (enter to copy link ↗)"),
+					hintStyle.Render(hint),
 			)
 		} else {
 			lines = append(lines,
