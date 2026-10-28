@@ -73,6 +73,9 @@ type Contact struct {
 	sending bool
 	// status is shown under the send hint ("sent", an error, or empty).
 	status string
+	// copied is true while the transient "copied" confirmation is shown on
+	// the links panel.
+	copied bool
 }
 
 // Init is a no-op placeholder.
@@ -80,6 +83,11 @@ func (c Contact) Init() tea.Cmd { return nil }
 
 // Update handles key presses and the result of an async Telegram send.
 func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if _, ok := msg.(copyFeedbackMsg); ok {
+		c.copied = false
+		return c, nil
+	}
+
 	if result, ok := msg.(SendResultMsg); ok {
 		c.sending = false
 		if result.err != nil {
@@ -102,10 +110,13 @@ func (c Contact) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch key.String() {
 		case "up", "k":
 			c.selectedContactLink = (c.selectedContactLink + nContactLinks - 1) % nContactLinks
+			c.copied = false
 		case "down", "j":
 			c.selectedContactLink = (c.selectedContactLink + 1) % nContactLinks
+			c.copied = false
 		case "enter":
-			return c, tea.SetClipboard(contactLinks[c.selectedContactLink].url)
+			c.copied = true
+			return c, copyCmd(contactLinks[c.selectedContactLink].url)
 		}
 	}
 
@@ -169,7 +180,7 @@ func (c Contact) View() tea.View { return tea.NewView(c.renderContact()) }
 // renderContact builds the two-column contact page padded to the pinned frame size.
 func (c Contact) renderContact() string {
 	compose := contactComposePanel(style.ContactComposeWidth, style.ContentHeight, c)
-	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, c.selectedContactLink, *c.focus)
+	links := contactLinksPanel(style.ContactLinksWidth, style.ContentHeight, c.selectedContactLink, *c.focus, c.copied)
 	row := lipgloss.JoinHorizontal(lipgloss.Top, compose, strings.Repeat(" ", style.ColumnGap), links)
 	return lipgloss.NewStyle().Padding(0, style.ContentPadX).Render(row)
 }
@@ -230,11 +241,15 @@ func contactComposePanel(width, height int, c Contact) string {
 
 // contactLinksPanel renders the links panel with the signature pinned to the
 // bottom: filler lines = panel inner height - links - signature lines.
-func contactLinksPanel(width, height int, selected int, focused bool) string {
+func contactLinksPanel(width, height int, selected int, focused bool, copied bool) string {
 	body := make([]string, 0, height-2)
 	kv := make([]keyValueRow, len(contactLinks))
 	for i, l := range contactLinks {
-		kv[i] = keyValueRow{label: l.label, value: l.value, url: l.url, decoration: " ↗"}
+		decoration := " ↗"
+		if copied {
+			decoration = " ✓"
+		}
+		kv[i] = keyValueRow{label: l.label, value: l.value, url: l.url, decoration: decoration}
 	}
 	body = append(body, keyValueBody(kv, selected)...)
 

@@ -65,11 +65,12 @@ var swatchColors = []string{
 // Panel styles, declared once and treated as immutable. lipgloss styles are
 // value types, so sharing these is safe.
 var (
-	accentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorAccent))
-	dimStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
-	warmStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
-	errorStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorRed))
-	textStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorForeground))
+	accentStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorAccent))
+	dimStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorDim))
+	warmStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorWarm))
+	errorStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorRed))
+	textStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorForeground))
+	successStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(style.ColorGreen))
 )
 
 // About is the about page.

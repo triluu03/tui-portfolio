@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -41,6 +42,20 @@ var Pages = []Descriptor{
 
 // Emphasis delimiters for highlight text: {{word}} renders word in accentStyle.
 const emphOpen, emphClose = "{{", "}}"
+
+const copyFeedbackDuration = 3 * time.Second
+
+// copyFeedbackMsg clears a page's transient copy confirmation.
+type copyFeedbackMsg struct{}
+
+// copyCmd copies url to the clipboard and schedules copyFeedbackMsg so the
+// page can hide its "copied" indicator shortly after.
+func copyCmd(url string) tea.Cmd {
+	return tea.Batch(
+		tea.SetClipboard(url),
+		tea.Tick(copyFeedbackDuration, func(time.Time) tea.Msg { return copyFeedbackMsg{} }),
+	)
+}
 
 // renderEmphasis styles every {{...}} span in s with accentStyle and leaves the
 // surrounding text untouched. An unterminated marker is emitted literally.

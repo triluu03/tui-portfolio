@@ -120,6 +120,7 @@ var nProjects = len(projects)
 type Projects struct {
 	selected int
 	focus    *bool
+	copied   bool
 }
 
 // Init is a no-op placeholder.
@@ -127,12 +128,18 @@ func (p Projects) Init() tea.Cmd { return nil }
 
 // Update handles list navigation and ignores all other messages.
 func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if _, ok := msg.(copyFeedbackMsg); ok {
+		p.copied = false
+		return p, nil
+	}
+
 	key, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return p, nil
 	}
 
 	if p.focus == nil || !*p.focus {
+		p.copied = false
 		switch key.String() {
 		case "up", "k":
 			p.selected = (p.selected + nProjects - 1) % nProjects
@@ -145,7 +152,8 @@ func (p Projects) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if *p.focus {
 		switch key.String() {
 		case "enter":
-			return p, tea.SetClipboard(projects[p.selected].Source)
+			p.copied = true
+			return p, copyCmd(projects[p.selected].Source)
 		}
 	}
 
@@ -160,7 +168,7 @@ func (p Projects) renderProjects() string {
 	selectedProject := projects[p.selected]
 
 	projectList := projectListBody(p.selected, !*p.focus)
-	projectDetail := projectDetailBody(selectedProject, *p.focus)
+	projectDetail := projectDetailBody(selectedProject, *p.focus, p.copied)
 
 	body := lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -187,7 +195,7 @@ func projectListBody(selected int, focused bool) string {
 }
 
 // projectDetailBody renders the README-style detail panel for one project.
-func projectDetailBody(p Project, focused bool) string {
+func projectDetailBody(p Project, focused bool, copied bool) string {
 	tags := make([]string, len(p.Stack))
 	for i, s := range p.Stack {
 		tags[i] = accentStyle.Render("[" + s + "]")
@@ -220,10 +228,14 @@ func projectDetailBody(p Project, focused bool) string {
 		if focused {
 			innerWidth := style.ProjectDetailWidth - lipgloss.Width("│  │")
 			linkWidth := innerWidth - lipgloss.Width("→ source: ") - lipgloss.Width(" (enter to copy link ↗)")
+			hint, hintStyle := " (enter to copy link ↗)", accentStyle
+			if copied {
+				hint, hintStyle = " (copied ✓)", successStyle
+			}
 			lines = append(lines,
 				accentStyle.Render("→ source: ")+
 					hyperlink(p.Source, accentStyle.Render(ansi.Truncate(p.Source, linkWidth, "…")))+
-					accentStyle.Render(" (enter to copy link ↗)"),
+					hintStyle.Render(hint),
 			)
 		} else {
 			lines = append(lines,

@@ -18,4 +18,6 @@ const (
 	ColorFaint = "#363646"
 	// ColorRed is for error
 	ColorRed = "#E82424"
+	// ColorGreen is the success color (kanagawa spring green).
+	ColorGreen = "#98BB6C"
 )
