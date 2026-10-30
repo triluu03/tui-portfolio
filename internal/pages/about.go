@@ -140,7 +140,7 @@ func whoamiPanel(width, height int, focused bool) string {
 
 	note := []string{
 		dimStyle.Render("If you're using Mac's Terminal.app, link copy in this app will not work."),
-		dimStyle.Render("Please try to copy it manually! Sorry for the inconvenience :(."),
+		dimStyle.Render("Please try to copy it manually! Sorry for the inconvenience :("),
 	}
 	if n := height - 4 - 1 - len(body); n > 0 {
 		body = append(body, make([]string, n)...)
