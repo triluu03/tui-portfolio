@@ -19,7 +19,7 @@ import (
 	"charm.land/wish/v2/ratelimiter"
 	"golang.org/x/time/rate"
 
-	"github.com/triluu03/tui-portfolio/internal/app"
+	"github.com/triluu03/tui-portfolio/internal/intro"
 )
 
 const (
@@ -70,6 +70,6 @@ func main() {
 }
 
 func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
-	m := app.New()
+	m := intro.New()
 	return m, []tea.ProgramOption{}
 }
